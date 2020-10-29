@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(rwa3_group_1)
+project(rwa4_group_1)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -221,7 +221,7 @@ install(TARGETS rwa3_node
 install(FILES
         config/rwa3_sensor_kootbally.yaml
         config/rwa3-sample.yaml
-        launch/rwa3.launch
+        launch/rwa4.launch
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config
         )
 
