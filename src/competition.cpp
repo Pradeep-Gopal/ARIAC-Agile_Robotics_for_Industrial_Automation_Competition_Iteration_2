@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+int p =0;
 int camera_no = 0;
 part faulty_part_agv2;
 
@@ -69,45 +70,52 @@ void Competition::print_parts_detected(){
 
 void Competition::pre_kitting()
 {
-
     // Populating Orders vector
-    for (int i =0; i < received_orders_.size(); i++)
+    for (p; p < received_orders_.size(); p++)
     {
+        ROS_INFO_STREAM("ORDER NUMBER    =    " << p);
         order order_instance;
-        order_instance.order_id = received_orders_[i].order_id;
-        order_instance.shipments = received_orders_[i].shipments;
+        order_instance.order_id = received_orders_[p].order_id;
+        ROS_INFO_STREAM("Order IDDDDDDDDDDDDDDDDDDDDD = " << order_instance.order_id);
+        order_instance.shipments = received_orders_[p].shipments;
         orders_vector.push_back(order_instance);
 
         //Populating Shipment vector for each order
-        for (int j = 0; j < orders_vector[i].shipments.size(); j++)
+        for (int j = 0; j < orders_vector[p].shipments.size(); j++)
         {
             shipment shipment_instance;
-            shipment_instance.shipment_type = orders_vector[i].shipments[j].shipment_type;
-            shipment_instance.agv_id  = orders_vector[i].shipments[j].agv_id;
-            shipment_instance.products  = orders_vector[i].shipments[j].products;
-
+            shipment_instance.shipment_type = orders_vector[p].shipments[j].shipment_type;
+            ROS_INFO_STREAM("Shipment IDDDDDDDDDDDDDDDDDDDDD = " << shipment_instance.shipment_type);
+            shipment_instance.agv_id  = orders_vector[p].shipments[j].agv_id;
+            ROS_INFO_STREAM("AGV IDDDDDDDDDDDDDDDDDDDDD = " << orders_vector[p].shipments[j].agv_id);
+            ROS_INFO_STREAM("PRODUCTsssssssssssssssssS  = " << orders_vector[p].shipments[j].products.size());
+            shipment_instance.products  = orders_vector[p].shipments[j].products;
             shipment_vector.push_back(shipment_instance);
+            ROS_INFO_STREAM("Size of the orderrrrrrrrrrrrr = " << orders_vector[p].shipments[j].products.size());
+            ROS_INFO_STREAM("Product type = " << orders_vector[p].shipments[j].products[0].type);
+            ROS_INFO_STREAM("Product type = " << orders_vector[p].shipments[j].products[1].type);
+
 
 //            ROS_INFO_STREAM("==========================PARTS TO BE PICKED==============================");
-            for (int k = 0; k < shipment_vector[j].products.size(); k++)
+            for (int k = 0; k < orders_vector[p].shipments[j].products.size(); k++)
             {
-//                ROS_INFO_STREAM(shipment_vector[j].products[k].type);
                 if(shipment_vector[j].products[k].type == ("pulley_part_red") || ("pulley_part_blue") || ("pulley_part_green") || ("piston_part_red") || ("piston_part_green") || ("piston_part_blue") || ("disk_part_red") || ("disk_part_green") || ("disk_part_blue") || ("gasket_part_red") || ("gasket_part_green") || ("gasket_part_blue") ) {
                     ROS_INFO_STREAM("Part kidachiduchu doiiii");
-                    ROS_INFO_STREAM(shipment_vector[j].products[k].pose);
+                    ROS_INFO_STREAM(orders_vector[p].shipments[j].products[k].type);
+                    ROS_INFO_STREAM(orders_vector[p].shipments[j].products[k].pose);
 
                     part part_to_be_placed;
-                    part_to_be_placed.type = shipment_vector[j].products[k].type;
-                    part_to_be_placed.pose.position.x = shipment_vector[j].products[k].pose.position.x;
-                    part_to_be_placed.pose.position.y = shipment_vector[j].products[k].pose.position.y;
-                    part_to_be_placed.pose.position.z = shipment_vector[j].products[k].pose.position.z;
-                    part_to_be_placed.pose.orientation.x = shipment_vector[j].products[k].pose.orientation.x;
-                    part_to_be_placed.pose.orientation.y = shipment_vector[j].products[k].pose.orientation.y;
-                    part_to_be_placed.pose.orientation.z = shipment_vector[j].products[k].pose.orientation.z;
-                    part_to_be_placed.pose.orientation.w = shipment_vector[j].products[k].pose.orientation.w;
+                    part_to_be_placed.type = orders_vector[p].shipments[j].products[k].type;
+                    part_to_be_placed.pose.position.x = orders_vector[p].shipments[j].products[k].pose.position.x;
+                    part_to_be_placed.pose.position.y = orders_vector[p].shipments[j].products[k].pose.position.y;
+                    part_to_be_placed.pose.position.z = orders_vector[p].shipments[j].products[k].pose.position.z;
+                    part_to_be_placed.pose.orientation.x = orders_vector[p].shipments[j].products[k].pose.orientation.x;
+                    part_to_be_placed.pose.orientation.y = orders_vector[p].shipments[j].products[k].pose.orientation.y;
+                    part_to_be_placed.pose.orientation.z = orders_vector[p].shipments[j].products[k].pose.orientation.z;
+                    part_to_be_placed.pose.orientation.w = orders_vector[p].shipments[j].products[k].pose.orientation.w;
 
                     master_struct master_struct_instance;
-                    master_struct_instance.type = shipment_vector[j].products[k].type;
+                    master_struct_instance.type = part_to_be_placed.type;
                     master_struct_instance.place_part_pose.position.x = part_to_be_placed.pose.position.x;
                     master_struct_instance.place_part_pose.position.y = part_to_be_placed.pose.position.y;
                     master_struct_instance.place_part_pose.position.z = part_to_be_placed.pose.position.z;
@@ -118,37 +126,27 @@ void Competition::pre_kitting()
                     master_struct_instance.order_id = order_instance.order_id;
                     master_struct_instance.shipment_type = shipment_instance.shipment_type;
                     master_struct_instance.agv_id = shipment_instance.agv_id;
-                    master_vector[i][j][k] = master_struct_instance;
+                    master_vector[p][j][k] = master_struct_instance;
                 }
-
-//                product product_vector_instance;
-//                product_vector_instance.type = part_to_be_placed.type;
-//                product_vector_instance.pose.position.x = part_to_be_placed.pose.position.x;
-//                product_vector_instance.pose.position.y = part_to_be_placed.pose.position.y;
-//                product_vector_instance.pose.position.z = part_to_be_placed.pose.position.z;
-//                product_vector_instance.pose.orientation.x = part_to_be_placed.pose.orientation.x;
-//                product_vector_instance.pose.orientation.y = part_to_be_placed.pose.orientation.y;
-//                product_vector_instance.pose.orientation.z = part_to_be_placed.pose.orientation.z;
-//                product_vector_instance.pose.orientation.w = part_to_be_placed.pose.orientation.w;
-//                product_vector_instance.agv_id = shipment_instance.agv_id;
-//                product_vector.push_back(product_vector_instance);
-
-//                Competition::during_kitting(part_to_be_placed);
             }
         }
     }
+
+    ROS_INFO_STREAM(" PPPPPPPPPPPPPPPPPPPPPPPPPPPPP ==== " << p);
 //    Competition::print_parts_to_pick();
 //    ROS_INFO_STREAM("===================Thats all folks!!!!======================");
 }
 
 void Competition::print_parts_to_pick()
 {
+    ROS_INFO_STREAM("Parts in master vector");
     for(int i=0; i < 10;  i++) {
+        ROS_INFO_STREAM("ORder Nooooooooooooooooooooooo = " << i);
         for (int j = 0; j < 10; j++) {
+//            ROS_INFO_STREAM("SHipment NOOOOOOOOOOOOOOOOOOOOOO = " << j);
             for (int k = 0; k < 20; k++) {
                 if((master_vector[i][j][k].type == "pulley_part_red") || (master_vector[i][j][k].type == "pulley_part_blue") || (master_vector[i][j][k].type == "pulley_part_green")|| (master_vector[i][j][k].type == "disk_part_blue")|| (master_vector[i][j][k].type == "disk_part_red")|| (master_vector[i][j][k].type == "disk_part_green")|| (master_vector[i][j][k].type == "piston_part_blue")|| (master_vector[i][j][k].type == "piston_part_green")|| (master_vector[i][j][k].type == "piston_part_red")|| (master_vector[i][j][k].type == "gasket_part_blue")|| (master_vector[i][j][k].type == "gasket_part_red")|| (master_vector[i][j][k].type == "gasket_part_green"))
                 {
-                    ROS_INFO_STREAM("Parts in master vector");
                     ROS_INFO_STREAM(master_vector[i][j][k].type);
                 }
             }
@@ -257,17 +255,6 @@ void Competition::logical_camera_callback(const nist_gear::LogicalCameraImage::C
             parts_from_camera[cam_idx][i].faulty = false;
             parts_from_camera[cam_idx][i].picked = false;
 
-
-//            parts_from_camera[i].type = msg->models[i].type;
-//            parts_from_camera[i].pose.position.x = tx;
-//            parts_from_camera[i].pose.position.y = ty;
-//            parts_from_camera[i].pose.position.z = tz;
-//            parts_from_camera[i].pose.orientation.x = pose_target.pose.orientation.x;
-//            parts_from_camera[i].pose.orientation.y = pose_target.pose.orientation.y;
-//            parts_from_camera[i].pose.orientation.z = pose_target.pose.orientation.z;
-//            parts_from_camera[i].pose.orientation.w = pose_target.pose.orientation.w;
-
-
             // Output the measure
 //            ROS_INFO("'%s' in '%s' frame : X: %.2f Y: %.2f Z: %.2f - R: %.2f P: %.2f Y: %.2f",
 //                     topic.c_str(),
@@ -293,7 +280,8 @@ void Competition::competition_state_callback(const std_msgs::String::ConstPtr & 
 }
 
 void Competition::order_callback(const nist_gear::Order::ConstPtr & msg) {
-//    ROS_INFO_STREAM("Received order:\n" << *msg);
+    ROS_INFO_STREAM("New High Priority ordered received");
+    ROS_INFO_STREAM("Received order:\n" << *msg);
     received_orders_.push_back(*msg);
     Competition::pre_kitting();
 }

@@ -151,6 +151,10 @@ int main(int argc, char ** argv) {
                                 ROS_INFO_STREAM("picked status "<< parts_from_camera_main[l][m].picked);
                                 ROS_INFO_STREAM("Part found in environment");
                                 ROS_INFO_STREAM(parts_from_camera_main[l][m].type);
+
+
+
+
                                 if (master_vector_main[i][j][k].type == "disk_part_blue")
                                 {
                                     ROS_INFO_STREAM(master_vector_main[i][j][k].place_part_pose);
@@ -195,7 +199,7 @@ int main(int argc, char ** argv) {
                                     faulty_part = comp.get_quality_sensor_status();
                                     ROS_INFO_STREAM("Status of faulty part = ");
                                     ROS_INFO_STREAM(faulty_part.faulty);
-                                    if(faulty_part.faulty == true)
+                                    if(faulty_part.faulty == true) // If placed part is faulty
                                     {
                                         part faulty_part;
                                         faulty_part.pose = gantry.getTargetWorldPose_dummy(faulty_part.pose, master_vector_main[i][j][k].agv_id);
@@ -217,13 +221,16 @@ int main(int argc, char ** argv) {
 //                                        parts_from_camera_main = comp.get_parts_from_camera();
                                         goto LOOP2;
                                     }
-                                    else {
+                                    else { //Part successfully placed, increment K to go to next part in vector
                                         k++;
+                                        comp.print_parts_to_pick();
                                         ROS_INFO_STREAM("Go to Loop Triggered");
                                         goto LOOP;
                                     }
-
                                 }
+
+
+
                                 else if (master_vector_main[i][j][k].type == "disk_part_green")
                                 {
                                     ROS_INFO_STREAM(master_vector_main[i][j][k].place_part_pose);
@@ -286,11 +293,13 @@ int main(int argc, char ** argv) {
                                         goto LOOP2;
                                     }
                                     else {
+                                        comp.print_parts_to_pick();
                                         k++;
                                         ROS_INFO_STREAM("Go to Loop triggered");
                                         goto LOOP;
                                     }
                                 }
+
 
                                 else if (master_vector_main[i][j][k].type == "gasket_part_green")
                                 {
@@ -371,11 +380,15 @@ int main(int argc, char ** argv) {
                                         goto LOOP2;
                                     }
                                     else {
+                                        ROS_INFO_STREAM("Checking if vector size increasedddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
+                                        comp.print_parts_to_pick();
                                         k++;
                                         ROS_INFO_STREAM("Go to Loop triggered");
                                         goto LOOP;
                                     }
                                 }
+
+
 
                                 else if (master_vector_main[i][j][k].type == "gasket_part_blue")
                                 {
@@ -456,6 +469,7 @@ int main(int argc, char ** argv) {
                                         goto LOOP2;
                                     }
                                     else {
+                                        comp.print_parts_to_pick();
                                         k++;
                                         ROS_INFO_STREAM("Go to Loop triggered");
                                         goto LOOP;
@@ -570,6 +584,7 @@ int main(int argc, char ** argv) {
                                         goto LOOP2;
                                     }
                                     else {
+                                        comp.print_parts_to_pick();
                                         k++;
                                         ROS_INFO_STREAM("Go to Loop triggered");
                                         goto LOOP;
