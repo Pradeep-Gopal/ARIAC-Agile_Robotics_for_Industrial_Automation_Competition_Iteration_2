@@ -69,11 +69,11 @@ class GantryControl {
     //--preset locations;
     start start_;
     bin3 bin3_;
-    agv2 agv2_;
+    agv2 agv2_, agv1_;
     agv2_drop agv2_drop_;
     bin13 bin13_;
     bin16 bin16_;
-    shelf5 shelf5_;
+    shelf5 shelf5_, shelf8_w1_, shelf8_w2_, shelf8_w3_, shelf8_w4_;
 
     waypoint_1 waypoint_1_;
     waypoint_2 waypoint_2_;
