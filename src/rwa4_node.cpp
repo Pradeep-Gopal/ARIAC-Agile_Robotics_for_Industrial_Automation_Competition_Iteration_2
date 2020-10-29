@@ -221,15 +221,15 @@ int main(int argc, char ** argv) {
                                 {
                                     ROS_INFO_STREAM(master_vector_main[i][j][k].place_part_pose);
                                     ROS_INFO_STREAM(parts_from_camera_main[l][m].pose);
-                                    std::string location = "bin_16";
+                                    std::string location = "bin_13";
                                     gantry.goToPresetLocation(gantry.start_);
                                     ROS_INFO_STREAM("Start location reached");
-                                    gantry.goToPresetLocation(gantry.bin16_);
-                                    ROS_INFO_STREAM("bin16 location reached");
+                                    gantry.goToPresetLocation(gantry.bin13_);
+                                    ROS_INFO_STREAM("bin13 location reached");
                                     gantry.pickPart(parts_from_camera_main[l][m]);
                                     ROS_INFO_STREAM("Part picked");
-                                    gantry.goToPresetLocation(gantry.bin16_);
-                                    ROS_INFO_STREAM("bin16 location reached");
+                                    gantry.goToPresetLocation(gantry.bin13_);
+                                    ROS_INFO_STREAM("bin13 location reached");
 
                                     gantry.goToPresetLocation(gantry.start_);
                                     ROS_INFO_STREAM("Start location reached");
@@ -320,21 +320,6 @@ int main(int argc, char ** argv) {
                                     part_in_tray.pose.orientation.z = master_vector_main[i][j][k].place_part_pose.orientation.z;
                                     part_in_tray.pose.orientation.w = master_vector_main[i][j][k].place_part_pose.orientation.w;
 
-                                    tf2::Quaternion q(
-                                            part_in_tray.pose.orientation.x,
-                                            part_in_tray.pose.orientation.y,
-                                            part_in_tray.pose.orientation.z,
-                                            part_in_tray.pose.orientation.w);
-
-                                    // 3x3 Rotation matrix from quaternion
-                                    tf2::Matrix3x3 m1(q);
-
-                                    // Roll Pitch and Yaw from rotation matrix
-                                    double roll, pitch, yaw;
-                                    m1.getRPY(roll, pitch, yaw);
-                                    ROS_INFO_STREAM("Rollllllllllllllllllllllllllllllllllllllllllll" << roll);
-                                    ROS_INFO_STREAM("Flippppppppppppppppppppppppppppppppppppppppppp" << flip);
-                                    roll = (double)roll;
                                     if(part_in_tray.pose.orientation.x == 1)
                                     {
                                         gantry.activateGripper("right_arm");
@@ -344,9 +329,6 @@ int main(int argc, char ** argv) {
                                         ROS_INFO_STREAM("Thirupi Podu Dosaiiiiiii");
                                         gantry.goToPresetLocation(gantry.agv2_flip_);
                                         ROS_INFO_STREAM("AGV 2 location reached");
-//
-//                                        ros::Duration(0.5).sleep();
-//                                        ROS_INFO_STREAM("Right Gripper activated");
                                         gantry.goToPresetLocation(gantry.pose_change_1);
                                         ROS_INFO_STREAM("Flipping pose1 reached");
                                         gantry.goToPresetLocation(gantry.pose_change_2);
@@ -356,28 +338,11 @@ int main(int argc, char ** argv) {
                                         ROS_INFO_STREAM("Left Gripper Disabled");
                                         gantry.goToPresetLocation(gantry.flip_target_);
                                         ROS_INFO_STREAM("Reached AGV");
-
-                                        roll = 0; //Setting roll back to zero after flipping
-                                        tf2::Quaternion myQuaternion;
-                                        myQuaternion.setRPY(roll, pitch, yaw);  // Create this quaternion from roll/pitch/yaw (in radians)
-                                        ROS_INFO_STREAM("Printing Roll pitch yaw values");
-                                        ROS_INFO_STREAM(roll << pitch << yaw);
-                                        ROS_INFO_STREAM("Printing Quaternion values");
-                                        ROS_INFO_STREAM(q[0]);
-                                        ROS_INFO_STREAM(q[1]);
-                                        ROS_INFO_STREAM(q[2]);
-                                        ROS_INFO_STREAM(q[3]);
-
-//                                        part_in_tray.pose.orientation.x = q[0];
-//                                        part_in_tray.pose.orientation.y = q[1];
-//                                        part_in_tray.pose.orientation.z = q[2];
-//                                        part_in_tray.pose.orientation.w = q[3];
-
+                                        
                                         part_in_tray.pose.orientation.x = 0;
                                         part_in_tray.pose.orientation.y = 0;
                                         part_in_tray.pose.orientation.z = 0;
                                         part_in_tray.pose.orientation.w = 1;
-
                                         gantry.placePart_right_arm(part_in_tray, master_vector_main[i][j][k].agv_id);
                                         ROS_INFO_STREAM("Part placed");
                                     }

@@ -155,8 +155,8 @@ include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(rwa3_node
-        src/rwa3_node.cpp
+add_executable(rwa4_node
+        src/rwa4_node.cpp
         src/competition.cpp
         src/gantry_control.cpp
         src/utils.cpp
@@ -171,9 +171,9 @@ add_executable(rwa3_node
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(rwa3_node  ${catkin_EXPORTED_TARGETS})
+add_dependencies(rwa4_node  ${catkin_EXPORTED_TARGETS})
 ## Specify libraries to link a library or executable target against
-target_link_libraries(rwa3_node ${catkin_LIBRARIES})
+target_link_libraries(rwa4_node ${catkin_LIBRARIES})
 # target_link_libraries(robot_controller_node ${catkin_LIBRARIES})
 
 #############
@@ -196,7 +196,7 @@ target_link_libraries(rwa3_node ${catkin_LIBRARIES})
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 
-install(TARGETS rwa3_node
+install(TARGETS rwa4_node
         ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
         LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
         RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -219,8 +219,8 @@ install(TARGETS rwa3_node
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 install(FILES
-        config/rwa3_sensor_kootbally.yaml
-        config/rwa3-sample.yaml
+        config/sensor.yaml
+        config/rwa4-sample.yaml
         launch/rwa4.launch
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config
         )
