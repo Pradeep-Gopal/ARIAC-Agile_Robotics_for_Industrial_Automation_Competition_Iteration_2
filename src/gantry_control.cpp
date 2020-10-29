@@ -110,11 +110,6 @@ void GantryControl::init() {
     pose_change_1.left_arm = {PI/4,-0.2,1.3,0.5,PI/2,0.00};
     pose_change_1.right_arm = {-PI/4,-3,-PI/2,-0.1,PI/2,-0.79};
 
-
-//    pose_change_2.gantry = {0.0,5,PI};
-//    pose_change_2.left_arm = {0.77,-0.2,1.3,0.49,1.59,0.00};
-//    pose_change_2.right_arm = {-0.8,-3.17,-1.49,-0.3,1.57,-0.79};
-
     // switching wavepoint
     pose_change_2.gantry = {0.0,5,PI};
     pose_change_2.left_arm = {0.77,-0.2,1.3,0.49,1.59,0.00};
@@ -145,6 +140,24 @@ void GantryControl::init() {
     shelf8_w4_.gantry = {-14.5, -1.2, 0.0};
     shelf8_w4_.left_arm = {-2.79, -PI/4, PI/2, -PI/4, -1.39626, 0};
     shelf8_w4_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
+
+    //Moving to shelf 11
+    // gasket part blue
+    shelf11_w1_.gantry = {0.0,1.4,0};
+    shelf11_w1_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
+    shelf11_w1_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
+
+    shelf11_w2_.gantry = {-14.8,1.4,0};
+    shelf11_w2_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
+    shelf11_w2_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
+
+    shelf11_w3_.gantry = {-14.8, 1.4, 0.0};
+    shelf11_w3_.left_arm = {-PI/2, -PI/4, PI/2, -PI/4, PI/2, 0};
+    shelf11_w3_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
+
+    shelf11_w4_.gantry = {-14.8, 1.8, 0.0};
+    shelf11_w4_.left_arm = {-2.79, -PI/4, PI/2, -PI/4, -1.39626, 0};
+    shelf11_w4_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
 
 //    tf2_ros::Buffer tfBuffer;
 //    tf2_ros::TransformListener tfListener(tfBuffer);
