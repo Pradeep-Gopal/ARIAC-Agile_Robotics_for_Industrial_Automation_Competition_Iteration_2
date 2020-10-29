@@ -15,6 +15,7 @@ std::vector<shipment> shipment_vector;
 std::vector<product> product_vector;
 std::vector<pick_and_place> pick_and_place_poses_vector;
 std::array<std::array<part, 20>, 20>  parts_from_camera ;
+std::array<std::array<part, 20>, 20>  parts_from_AGV_camera ;
 std::vector<std::vector<std::vector<master_struct> > > master_vector (10,std::vector<std::vector<master_struct> >(10,std::vector <master_struct>(20)));
 
 ////////////////////////////////////////////////////
@@ -59,11 +60,21 @@ void Competition::print_parts_detected(){
         std::cout << "parts from camera = " << i << std::endl;
         std::cout << std::endl;
         for (int j = 0; j < parts_from_camera[i].size(); j++){
-            std::cout << " " << parts_from_camera[i][j].type;
+            ROS_INFO_STREAM("parts from NORMAL CAMERA printing ");
+            ROS_INFO_STREAM(parts_from_camera[i][j].type);
         }
         std::cout << std::endl;
         std::cout << std::endl;
     }
+}
+
+void Competition::print_AGV_parts_detected() {
+    for(int i =16; i < 18; i++)
+        for (int j = 0; j < parts_from_camera[i].size(); j++) {
+            ROS_INFO_STREAM("parts from agv printing ");
+            ROS_INFO_STREAM(parts_from_camera[i][j].type);
+            ROS_INFO_STREAM(parts_from_camera[i][j].type);
+        }
 }
 
 
@@ -93,7 +104,6 @@ void Competition::pre_kitting()
             {
 //                ROS_INFO_STREAM(shipment_vector[j].products[k].type);
                 if(shipment_vector[j].products[k].type == ("pulley_part_red") || ("pulley_part_blue") || ("pulley_part_green") || ("piston_part_red") || ("piston_part_green") || ("piston_part_blue") || ("disk_part_red") || ("disk_part_green") || ("disk_part_blue") || ("gasket_part_red") || ("gasket_part_green") || ("gasket_part_blue") ) {
-                    ROS_INFO_STREAM("Part kidachiduchu doiiii");
                     ROS_INFO_STREAM(shipment_vector[j].products[k].pose);
 
                     part part_to_be_placed;
@@ -160,6 +170,7 @@ std::array<std::array<part, 20>, 20> Competition::get_parts_from_camera()
 {
     return parts_from_camera;
 }
+
 
 std::vector<std::vector<std::vector<master_struct> > > Competition::get_master_vector()
 {
@@ -256,8 +267,6 @@ void Competition::logical_camera_callback(const nist_gear::LogicalCameraImage::C
             parts_from_camera[cam_idx][i].pose.orientation.w = pose_target.pose.orientation.w;
             parts_from_camera[cam_idx][i].faulty = false;
             parts_from_camera[cam_idx][i].picked = false;
-
-
 //            parts_from_camera[i].type = msg->models[i].type;
 //            parts_from_camera[i].pose.position.x = tx;
 //            parts_from_camera[i].pose.position.y = ty;

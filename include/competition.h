@@ -32,6 +32,7 @@ public:
     part get_quality_sensor_status();
     std::vector<std::vector<std::vector<master_struct> > > get_master_vector();
     void print_parts_detected();
+    void print_AGV_parts_detected();
     void print_parts_to_pick();
     void pre_kitting();
     void during_kitting(part);
