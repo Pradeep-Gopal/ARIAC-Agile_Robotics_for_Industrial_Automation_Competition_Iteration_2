@@ -76,7 +76,7 @@ typedef struct master_struct{
     std::string order_id;
     std::string shipment_type;
     std::string agv_id;
-    bool delivered;
+    bool delivered = false;
 } master_struct;
 
 
