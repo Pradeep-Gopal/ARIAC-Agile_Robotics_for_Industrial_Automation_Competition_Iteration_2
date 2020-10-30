@@ -41,6 +41,7 @@ public:
     double getStartTime();
     std::string getCompetitionState();
     stats getStats(std::string function);
+    std::vector<nist_gear::Order> get_received_order_vector();
 
 private:
     ros::NodeHandle node_;

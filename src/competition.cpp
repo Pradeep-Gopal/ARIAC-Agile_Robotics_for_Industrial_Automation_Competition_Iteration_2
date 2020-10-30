@@ -67,6 +67,10 @@ void Competition::print_parts_detected(){
     }
 }
 
+std::vector<nist_gear::Order> Competition::get_received_order_vector()
+{
+ return received_orders_;
+}
 
 void Competition::pre_kitting()
 {
