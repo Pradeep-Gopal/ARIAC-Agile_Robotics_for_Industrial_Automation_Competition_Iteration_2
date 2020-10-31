@@ -15,7 +15,7 @@ std::vector<shipment> shipment_vector;
 std::vector<product> product_vector;
 std::vector<pick_and_place> pick_and_place_poses_vector;
 std::array<std::array<part, 20>, 20>  parts_from_camera ;
-std::array<std::array<part, 20>, 20>  parts_from_AGV_camera ;
+
 std::vector<std::vector<std::vector<master_struct> > > master_vector (10,std::vector<std::vector<master_struct> >(10,std::vector <master_struct>(20)));
 
 ////////////////////////////////////////////////////
@@ -57,26 +57,13 @@ void Competition::init() {
 void Competition::print_parts_detected(){
     for (int i = 0; i < parts_from_camera.size(); i++)
     {
-        std::cout << "parts from camera = " << i << std::endl;
-        std::cout << std::endl;
+        ROS_INFO_STREAM("parts from camera = "<<i );
         for (int j = 0; j < parts_from_camera[i].size(); j++){
             ROS_INFO_STREAM("parts from NORMAL CAMERA printing ");
             ROS_INFO_STREAM(parts_from_camera[i][j].type);
         }
-        std::cout << std::endl;
-        std::cout << std::endl;
     }
 }
-
-void Competition::print_AGV_parts_detected() {
-    for(int i =16; i < 18; i++)
-        for (int j = 0; j < parts_from_camera[i].size(); j++) {
-            ROS_INFO_STREAM("parts from agv printing ");
-            ROS_INFO_STREAM(parts_from_camera[i][j].type);
-            ROS_INFO_STREAM(parts_from_camera[i][j].type);
-        }
-}
-
 
 void Competition::pre_kitting()
 {
@@ -171,6 +158,10 @@ std::array<std::array<part, 20>, 20> Competition::get_parts_from_camera()
     return parts_from_camera;
 }
 
+std::array<part, 1> Competition::get_parts_from_17_camera()
+{
+    return parts_from_17_camera;
+}
 
 std::vector<std::vector<std::vector<master_struct> > > Competition::get_master_vector()
 {
@@ -189,7 +180,6 @@ std::vector<std::vector<std::vector<master_struct> > > Competition::get_master_v
 part Competition::get_quality_sensor_status(){
     return faulty_part_agv2;
 }
-
 
 void Competition::logical_camera_callback(const nist_gear::LogicalCameraImage::ConstPtr & msg, int cam_idx)
 {
@@ -256,7 +246,24 @@ void Competition::logical_camera_callback(const nist_gear::LogicalCameraImage::C
             otopic_part.clear();
             otopic_part << msg->models[i].type << "_" << cam_idx << "_" << part_no;
             topic_part = otopic_part.str();
-
+            if (cam_idx == 17){
+                parts_from_17_camera[0].type = msg->models[i].type;
+                parts_from_17_camera[0].pose.position.x = tx;
+                parts_from_17_camera[0].pose.position.y = ty;
+                parts_from_17_camera[0].pose.position.z = tz;
+                parts_from_17_camera[0].pose.orientation.x = pose_target.pose.orientation.x;
+                parts_from_17_camera[0].pose.orientation.y = pose_target.pose.orientation.y;
+                parts_from_17_camera[0].pose.orientation.z = pose_target.pose.orientation.z;
+                parts_from_17_camera[0].pose.orientation.w = pose_target.pose.orientation.w;
+                parts_from_17_camera[0].faulty = false;
+                parts_from_17_camera[0].picked = false;
+//                ROS_INFO_STREAM("-----accessing part from the 17 array------");
+//                ROS_INFO_STREAM(parts_from_17_camera[0].type);
+//                ROS_INFO_STREAM(parts_from_17_camera[0].pose.position.x );
+//                ROS_INFO_STREAM(parts_from_17_camera[0].pose.position.y );
+//                ROS_INFO_STREAM(parts_from_17_camera[0].pose.position.z );
+//                ROS_INFO_STREAM("-----loop 17 end------");
+            }
             parts_from_camera[cam_idx][i].type = msg->models[i].type;
             parts_from_camera[cam_idx][i].pose.position.x = tx;
             parts_from_camera[cam_idx][i].pose.position.y = ty;
@@ -290,6 +297,7 @@ void Competition::logical_camera_callback(const nist_gear::LogicalCameraImage::C
 //        ROS_INFO_STREAM(" ");
     }
 }
+
 
 
 /// Called when a new message is received.

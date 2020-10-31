@@ -38,6 +38,7 @@
 
 #define MAX_NUMBER_OF_CAMERAS 17
 std::array<std::array<part, 20>, 20>  parts_from_camera_main ;
+std::array<part, 1> parts_from_camera_17 ;
 std::vector<std::vector<std::vector<master_struct> > > master_vector_main (10,std::vector<std::vector<master_struct> >(10,std::vector <master_struct>(20)));
 bool part_placed = false;
 int k = 0;
@@ -100,8 +101,10 @@ int main(int argc, char ** argv) {
 
     //Array of Logical Camera Subscribersq
     ros::Subscriber logical_camera_subscriber_ [MAX_NUMBER_OF_CAMERAS];
+    ros::Subscriber logical_camera_subscriber2_;
     std::ostringstream otopic;
     std::string topic;
+
 
     for (int idx = 0; idx < MAX_NUMBER_OF_CAMERAS; idx++){
         otopic.str("");
@@ -123,6 +126,14 @@ int main(int argc, char ** argv) {
 
     parts_from_camera_main = comp.get_parts_from_camera();
     master_vector_main = comp.get_master_vector();
+
+    otopic.str("");
+    otopic.clear();
+    otopic << "/ariac/logical_camera_17";
+    topic = otopic.str();
+    ROS_INFO_STREAM("TOPIC CREATED");
+    logical_camera_subscriber2_ = node.subscribe<nist_gear::LogicalCameraImage>
+            (topic, 10, boost::bind(&Competition::logical_camera_callback, &comp, _1, 17));
 
     for(int i=0; i < 10;  i++) {
 
@@ -242,20 +253,40 @@ int main(int argc, char ** argv) {
 
                                     gantry.placePart(part_in_tray, master_vector_main[i][j][k].agv_id);
                                     ROS_INFO_STREAM("Part placed");
-                                    parts_from_camera_main = comp.get_parts_from_camera();
-                                    gantry.goToPresetLocation(gantry.start_);
-                                    ROS_INFO_STREAM("Accessing subscribers 13");
-                                    ROS_INFO_STREAM(logical_camera_subscriber_[13]);
-                                    ROS_INFO_STREAM("Accessing subscribers 17");
-                                    ROS_INFO_STREAM(logical_camera_subscriber_[17]);
-                                    comp.print_parts_detected();
-
+//                                    gantry.goToPresetLocation(gantry.start_);
+//                                    ROS_INFO_STREAM("Start location reached");
+//                                    ROS_INFO_STREAM("-----------------------------------");
+//                                    otopic.str("");
+//                                    otopic.clear();
+//                                    otopic << "/ariac/logical_camera_17";
+//                                    topic = otopic.str();
+//                                    ROS_INFO_STREAM("TOPIC CREATED");
+//                                    logical_camera_subscriber2_ = node.subscribe<nist_gear::LogicalCameraImage>
+//                                            (topic, 10, boost::bind(&Competition::logical_camera_callback, &comp, _1, 17));
+//                                    ROS_INFO_STREAM("Callback called");
+//                                    ROS_INFO_STREAM("-----------------------------------");
+//                                    comp.print_parts_detected();
+                                    parts_from_camera_17 = comp.get_parts_from_17_camera();
+                                    ROS_INFO_STREAM("-----------------------------------");
+                                    ROS_INFO_STREAM("Current status of the disk_part_green part!");
+                                    ROS_INFO_STREAM(comp.parts_from_17_camera[0].type);
+                                    ROS_INFO_STREAM(comp.parts_from_17_camera[0].pose.position.x);
+                                    ROS_INFO_STREAM(comp.parts_from_17_camera[0].pose.position.y);
+                                    ROS_INFO_STREAM(comp.parts_from_17_camera[0].pose.position.z);
+                                    ROS_INFO_STREAM("The disk_part_green part was supposed to be at: ");
+                                    ROS_INFO_STREAM(master_vector_main[i][j][k].type);
+                                    ROS_INFO_STREAM(master_vector_main[i][j][k].position.x);
+                                    ROS_INFO_STREAM(master_vector_main[i][j][k].position.y);
+                                    ROS_INFO_STREAM(master_vector_main[i][j][k].position.z);
+                                    ROS_INFO_STREAM("The part is placed at an offset of : ");
+                                    ROS_INFO_STREAM(abs(comp.parts_from_17_camera[0].pose.position.x) - master_vector_main[i][j][k].position.x));
+                                    ROS_INFO_STREAM(abs(comp.parts_from_17_camera[0].pose.position.y) - master_vector_main[i][j][k].position.y));
+                                    ROS_INFO_STREAM(abs(comp.parts_from_17_camera[0].pose.position.z) - master_vector_main[i][j][k].position.z));
                                     if(master_vector_main[i][j][k].agv_id == "agv2")
                                     {
                                         gantry.goToPresetLocation(gantry.agv2_);
                                         ROS_INFO_STREAM("AGV2 location reached");
                                     }
-
                                     faulty_part = comp.get_quality_sensor_status();
                                     ROS_INFO_STREAM("Status of faulty part = ");
                                     ROS_INFO_STREAM(faulty_part.faulty);
