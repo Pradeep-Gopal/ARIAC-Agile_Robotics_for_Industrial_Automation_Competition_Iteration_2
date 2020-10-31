@@ -54,6 +54,11 @@ void Competition::init() {
 
 }
 
+void Competition::setter_delivered(int i, int j, int k)
+{
+    master_vector[i][j][k].delivered = true;
+}
+
 void Competition::print_parts_detected(){
     for (int i = 0; i < parts_from_camera.size(); i++)
     {

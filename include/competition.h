@@ -42,6 +42,7 @@ public:
     std::string getCompetitionState();
     stats getStats(std::string function);
     std::vector<nist_gear::Order> get_received_order_vector();
+    void setter_delivered(int i, int j, int k);
 
 private:
     ros::NodeHandle node_;

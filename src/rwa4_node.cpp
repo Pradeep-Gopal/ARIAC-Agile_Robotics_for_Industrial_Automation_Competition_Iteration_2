@@ -40,7 +40,7 @@
 std::array<std::array<part, 20>, 20>  parts_from_camera_main ;
 std::vector<std::vector<std::vector<master_struct> > > master_vector_main (10,std::vector<std::vector<master_struct> >(10,std::vector <master_struct>(20)));
 bool part_placed = false;
-int k = 0, i = 0;
+int k = 0, i = 0, temp = 45;
 const double flip = -3.14159;
 part faulty_part;
 
@@ -235,6 +235,7 @@ int main(int argc, char ** argv) {
                                     comp.print_parts_to_pick();
                                     ROS_INFO_STREAM("Go to Loop Triggered");
                                     master_vector_main[i][j][k].delivered = true;
+                                    comp.setter_delivered(i,j,k);
                                     ROS_INFO_STREAM(" i j k" << i << j << k);
                                     ROS_INFO_STREAM(parts_from_camera_main[l][m].type << "  successfully delivered");
                                     k++;
@@ -309,6 +310,7 @@ int main(int argc, char ** argv) {
                                     comp.print_parts_to_pick();
                                     ROS_INFO_STREAM("Go to Loop Triggered");
                                     master_vector_main[i][j][k].delivered = true;
+                                    comp.setter_delivered(i,j,k);
                                     ROS_INFO_STREAM(" i j k" << i << j << k);
                                     ROS_INFO_STREAM(parts_from_camera_main[l][m].type << "  successfully delivered");
                                     k++;
@@ -400,6 +402,7 @@ int main(int argc, char ** argv) {
                                     comp.print_parts_to_pick();
                                     ROS_INFO_STREAM("Go to Loop Triggered");
                                     master_vector_main[i][j][k].delivered = true;
+                                    comp.setter_delivered(i,j,k);
                                     ROS_INFO_STREAM("Checking delivered status" << master_vector_main[i][j][k].delivered);
                                     ROS_INFO_STREAM(" i j k" << i << j << k);
                                     ROS_INFO_STREAM(parts_from_camera_main[l][m].type << "  successfully delivered");
@@ -489,6 +492,7 @@ int main(int argc, char ** argv) {
                                 } else {
                                     comp.print_parts_to_pick();
                                     master_vector_main[i][j][k].delivered = true;
+                                    comp.setter_delivered(i,j,k);
                                     ROS_INFO_STREAM(" i j k" << i << j << k);
                                     ROS_INFO_STREAM(parts_from_camera_main[l][m].type << "  successfully delivered");
                                     k++;
@@ -601,6 +605,7 @@ int main(int argc, char ** argv) {
                                 } else {
                                     comp.print_parts_to_pick();
                                     master_vector_main[i][j][k].delivered = true;
+                                    comp.setter_delivered(i,j,k);
                                     ROS_INFO_STREAM(" i j k" << i << j << k);
                                     ROS_INFO_STREAM(parts_from_camera_main[l][m].type << "  successfully delivered");
                                     ROS_INFO_STREAM("Go to Loop triggered");
@@ -625,22 +630,19 @@ int main(int argc, char ** argv) {
     }
     }
 
-
-
-
-
 }
 
 
     gantry.goToPresetLocation(gantry.start_);
     ros::Duration timeout(5.0);
-    if(i > 1)
+    if((i > 1) && (temp!= i-2))
     {
         ROS_INFO_STREAM("2wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
         i = i-2;
         k = 0;
         ROS_INFO_STREAM("Executing Order = " << i-1);
         ROS_INFO_STREAM("Value of I = " << i);
+        temp = i;
         goto LOOP3;
     }
 
