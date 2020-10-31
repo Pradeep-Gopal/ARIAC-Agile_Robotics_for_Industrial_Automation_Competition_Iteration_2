@@ -102,7 +102,7 @@ void Competition::pre_kitting()
             shipment_vector.push_back(shipment_instance);
             ROS_INFO_STREAM("Size of the orderrrrrrrrrrrrr = " << orders_vector[p].shipments[j].products.size());
             ROS_INFO_STREAM("Product type = " << orders_vector[p].shipments[j].products[0].type);
-            ROS_INFO_STREAM("Product type = " << orders_vector[p].shipments[j].products[1].type);
+
 
 
 //            ROS_INFO_STREAM("==========================PARTS TO BE PICKED==============================");
