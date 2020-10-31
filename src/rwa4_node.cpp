@@ -43,6 +43,8 @@ bool part_placed = false;
 int k = 0, i = 0, temp = 45;
 const double flip = -3.14159;
 part faulty_part;
+int parts_delivered = 0;
+int size_of_order = 0;
 
 // AVG id(= 1,2) to identify what AVG to submit to
 // shipment_type is the order type
@@ -125,13 +127,15 @@ int main(int argc, char ** argv) {
     master_vector_main = comp.get_master_vector();
 
     LOOP3:for(i; i < comp.get_received_order_vector().size();  i++) {
+        parts_delivered = 0;
+    for (int j = 0; j < comp.get_received_order_vector()[i].shipments.size(); j++) {
 
-    for (int j = 0; j < 10; j++) {
         k = 0;
-        LOOP:while(k< 20)
-    {
+        LOOP:while(k< comp.get_received_order_vector()[i].shipments[j].products.size()) {
+            size_of_order = comp.get_received_order_vector()[i].shipments[j].products.size();
+
         ROS_INFO_STREAM("loop reached, part not faulty");
-//                for (int k = 0; k < 20; k++){
+        //                for (int k = 0; k < 20; k++){
         ROS_INFO_STREAM("NEWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW part");
         ROS_INFO_STREAM(i << j << k);
 
@@ -151,7 +155,9 @@ int main(int argc, char ** argv) {
             ROS_INFO_STREAM(master_vector_main[i][j][k].type);
             ROS_INFO_STREAM(master_vector_main[i][j][k].delivered);
             ROS_INFO_STREAM("checking i j k" << i << j << k);
-            if(master_vector_main[i][j][k].delivered == false) {
+
+
+            if (master_vector_main[i][j][k].delivered == false) {
                 part_placed = false;
                 LOOP2:
                 for (int l = 0; l < parts_from_camera_main.size(); l++) {
@@ -232,10 +238,11 @@ int main(int argc, char ** argv) {
                                     //                                        parts_from_camera_main = comp.get_parts_from_camera();
                                     goto LOOP2;
                                 } else { //Part successfully placed, increment K to go to next part in vector
-                                    comp.print_parts_to_pick();
+                                    //                                    comp.print_parts_to_pick();
                                     ROS_INFO_STREAM("Go to Loop Triggered");
                                     master_vector_main[i][j][k].delivered = true;
-                                    comp.setter_delivered(i,j,k);
+                                    parts_delivered++;
+                                    comp.setter_delivered(i, j, k);
                                     ROS_INFO_STREAM(" i j k" << i << j << k);
                                     ROS_INFO_STREAM(parts_from_camera_main[l][m].type << "  successfully delivered");
                                     k++;
@@ -279,7 +286,11 @@ int main(int argc, char ** argv) {
                                 if (master_vector_main[i][j][k].agv_id == "agv2") {
                                     gantry.goToPresetLocation(gantry.agv2_);
                                     ROS_INFO_STREAM("AGV2 location reached");
+                                } else {
+                                    gantry.goToPresetLocation(gantry.agv1_);
+                                    ROS_INFO_STREAM("AGV1 location reached");
                                 }
+                                gantry.goToPresetLocation(gantry.start_);
 
                                 faulty_part = comp.get_quality_sensor_status();
                                 ROS_INFO_STREAM("Status of faulty part = ");
@@ -307,10 +318,11 @@ int main(int argc, char ** argv) {
                                     //                                        parts_from_camera_main = comp.get_parts_from_camera();
                                     goto LOOP2;
                                 } else {
-                                    comp.print_parts_to_pick();
+                                    //                                    comp.print_parts_to_pick();
                                     ROS_INFO_STREAM("Go to Loop Triggered");
                                     master_vector_main[i][j][k].delivered = true;
-                                    comp.setter_delivered(i,j,k);
+                                    parts_delivered++;
+                                    comp.setter_delivered(i, j, k);
                                     ROS_INFO_STREAM(" i j k" << i << j << k);
                                     ROS_INFO_STREAM(parts_from_camera_main[l][m].type << "  successfully delivered");
                                     k++;
@@ -399,18 +411,22 @@ int main(int argc, char ** argv) {
                                 } else {
                                     ROS_INFO_STREAM(
                                             "Checking if vector size increased");
-                                    comp.print_parts_to_pick();
+                                    //                                    comp.print_parts_to_pick();
                                     ROS_INFO_STREAM("Go to Loop Triggered");
                                     master_vector_main[i][j][k].delivered = true;
-                                    comp.setter_delivered(i,j,k);
-                                    ROS_INFO_STREAM("Checking delivered status" << master_vector_main[i][j][k].delivered);
+                                    parts_delivered++;
+                                    comp.setter_delivered(i, j, k);
+                                    ROS_INFO_STREAM(
+                                            "Checking delivered status" << master_vector_main[i][j][k].delivered);
                                     ROS_INFO_STREAM(" i j k" << i << j << k);
                                     ROS_INFO_STREAM(parts_from_camera_main[l][m].type << "  successfully delivered");
                                     if (comp.get_received_order_vector().size() > i + 1) {
                                         ROS_INFO_STREAM("NEW ORDER RECEIVED");
                                         master_vector_main = comp.get_master_vector();
                                         ROS_INFO_STREAM(" after getting new master vector, i j k" << i << j << k);
-                                        ROS_INFO_STREAM("Checking if delivered status changed for part = " << master_vector_main[i][j][k].type << master_vector_main[i][j][k].delivered);
+                                        ROS_INFO_STREAM("Checking if delivered status changed for part = "
+                                                                << master_vector_main[i][j][k].type
+                                                                << master_vector_main[i][j][k].delivered);
                                         i++;
                                         goto LOOP3;
                                     }
@@ -470,7 +486,8 @@ int main(int argc, char ** argv) {
                                 ROS_INFO_STREAM("Status of faulty part = ");
                                 ROS_INFO_STREAM(faulty_part.faulty);
                                 if (faulty_part.faulty == true) {
-                                    faulty_part.pose = gantry.getTargetWorldPose_dummy(faulty_part.pose, master_vector_main[i][j][k].agv_id);
+                                    faulty_part.pose = gantry.getTargetWorldPose_dummy(faulty_part.pose,
+                                                                                       master_vector_main[i][j][k].agv_id);
                                     ROS_INFO_STREAM("Black sheep location");
                                     ROS_INFO_STREAM(faulty_part.pose);
                                     faulty_part.type = parts_from_camera_main[l][m].type;
@@ -490,9 +507,10 @@ int main(int argc, char ** argv) {
                                     //                                        parts_from_camera_main = comp.get_parts_from_camera();
                                     goto LOOP2;
                                 } else {
-                                    comp.print_parts_to_pick();
+                                    //                                    comp.print_parts_to_pick();
                                     master_vector_main[i][j][k].delivered = true;
-                                    comp.setter_delivered(i,j,k);
+                                    parts_delivered++;
+                                    comp.setter_delivered(i, j, k);
                                     ROS_INFO_STREAM(" i j k" << i << j << k);
                                     ROS_INFO_STREAM(parts_from_camera_main[l][m].type << "  successfully delivered");
                                     k++;
@@ -603,9 +621,10 @@ int main(int argc, char ** argv) {
                                     //                                        parts_from_camera_main = comp.get_parts_from_camera();
                                     goto LOOP2;
                                 } else {
-                                    comp.print_parts_to_pick();
+                                    //                                    comp.print_parts_to_pick();
                                     master_vector_main[i][j][k].delivered = true;
-                                    comp.setter_delivered(i,j,k);
+                                    parts_delivered++;
+                                    comp.setter_delivered(i, j, k);
                                     ROS_INFO_STREAM(" i j k" << i << j << k);
                                     ROS_INFO_STREAM(parts_from_camera_main[l][m].type << "  successfully delivered");
                                     ROS_INFO_STREAM("Go to Loop triggered");
@@ -630,8 +649,16 @@ int main(int argc, char ** argv) {
     }
     }
 
+    if(parts_delivered == size_of_order){
+        ROS_INFO_STREAM(" Order " << i << "completed successfully");
+        comp.delete_completed_order(i);
+        ROS_INFO_STREAM(" Order " << i << "deleted successfully");
+        ROS_INFO_STREAM("Size of vector now = " << comp.get_received_order_vector().size());
+    }
+
 }
 
+    ROS_INFO_STREAM("FOR LOOP TERMINATED");
 
     gantry.goToPresetLocation(gantry.start_);
     ros::Duration timeout(5.0);

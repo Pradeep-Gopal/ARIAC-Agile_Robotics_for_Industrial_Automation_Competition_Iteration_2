@@ -43,6 +43,7 @@ public:
     stats getStats(std::string function);
     std::vector<nist_gear::Order> get_received_order_vector();
     void setter_delivered(int i, int j, int k);
+    void delete_completed_order(int i);
 
 private:
     ros::NodeHandle node_;

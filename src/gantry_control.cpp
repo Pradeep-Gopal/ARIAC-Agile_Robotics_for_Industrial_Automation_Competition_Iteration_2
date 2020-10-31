@@ -45,7 +45,12 @@ void GantryControl::init() {
     bin16_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
 
 //    disk_part_green located in bin13
-    bin13_.gantry = {2.0, 2.35,0.0};
+//    bin13_.gantry = {2.0, 2.35,0.0};
+//    bin13_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
+//    bin13_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
+
+//    bin13_.gantry = {2.55, -1.58, 1.54};
+    bin13_.gantry = {2.55, 1.54, -1.58};
     bin13_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
     bin13_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
 
@@ -520,12 +525,17 @@ bool GantryControl::pickPart(part part){
             int max_attempts{5};
             int current_attempt{0};
             while(!state.attached) {
+                ROS_INFO_STREAM("Attached status = " << state.attached);
                 left_arm_group_.setPoseTarget(currentPose);
                 left_arm_group_.move();
                 ros::Duration(0.5).sleep();
                 left_arm_group_.setPoseTarget(part.pose);
                 left_arm_group_.move();
                 activateGripper("left_arm");
+                if(state.attached)
+                {
+                    return true;
+                }
             }
         }
     }

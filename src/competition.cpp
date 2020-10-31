@@ -173,6 +173,11 @@ std::vector<std::vector<std::vector<master_struct> > > Competition::get_master_v
     return master_vector;
 }
 
+void Competition::delete_completed_order(int i) {
+    received_orders_.erase(received_orders_.begin() + i);
+    ROS_INFO_STREAM("Deleting Order = " << i);
+}
+
 
 //void Competition::print_parts_detected(){
 //    ROS_INFO_STREAM("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
