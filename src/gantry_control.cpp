@@ -88,6 +88,26 @@ void GantryControl::init() {
     bin3_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
     bin3_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
 
+    //    Agv1 location
+//    agv1_.gantry = {0, -6.9, 0};
+//    // agv1_.left_arm = {-0.38, -PI/4, PI/2, -PI/4, 1.15, 0};
+//    agv1_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
+//    agv1_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
+
+    //    Agv1 location
+    agv1_.gantry = {0.6, -6.9, PI};
+    // agv1_.left_arm = {-0.38, -PI/4, PI/2, -PI/4, 1.15, 0};
+    agv1_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
+    agv1_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
+
+
+
+    test_pos_.gantry = {0.6, -6.9, PI};
+    test_pos_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
+    test_pos_.right_arm ={PI, -PI/4, PI/2, -PI/4, PI/2, 0};
+//    test_pos_.left_arm = {-2.26,-1.01,-1.50,-0.1,0.0,0.0};
+//    test_pos_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
+
 //    Agv2 location
     agv2_.gantry = {0.6, 6.9, PI};
     agv2_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
@@ -121,6 +141,8 @@ void GantryControl::init() {
     flip_target_.gantry = {-0.6, 6.9, PI};
     flip_target_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
     flip_target_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
+
+
 
 //    tf2_ros::Buffer tfBuffer;
 //    tf2_ros::TransformListener tfListener(tfBuffer);
@@ -231,18 +253,85 @@ stats GantryControl::getStats(std::string function) {
     if (function == "grip") return grip_;
 }
 
+//geometry_msgs::Pose GantryControl::getTargetWorldPose(geometry_msgs::Pose target,
+//                                                      std::string agv){
+//    static tf2_ros::StaticTransformBroadcaster br;
+//    geometry_msgs::TransformStamped transformStamped;
+//
+//    std::string kit_tray;
+//    if (agv.compare("agv1")==0)
+//        kit_tray = "kit_tray_1";
+//    else
+//        kit_tray = "kit_tray_2";
+//    transformStamped.header.stamp = ros::Time::now();
+//    transformStamped.header.frame_id = "kit_tray_2";
+//    transformStamped.child_frame_id = "target_frame";
+//    transformStamped.transform.translation.x = target.position.x;
+//    transformStamped.transform.translation.y = target.position.y;
+//    transformStamped.transform.translation.z = target.position.z;
+//    transformStamped.transform.rotation.x = target.orientation.x;
+//    transformStamped.transform.rotation.y = target.orientation.y;
+//    transformStamped.transform.rotation.z = target.orientation.z;
+//    transformStamped.transform.rotation.w = target.orientation.w;
+//
+//
+//    for (int i{0}; i<15; ++i)
+//        br.sendTransform(transformStamped);
+//
+//    tf2_ros::Buffer tfBuffer;
+//    tf2_ros::TransformListener tfListener(tfBuffer);
+//    ros::Rate rate(10);
+//    ros::Duration timeout(5.0);
+//
+//
+//    geometry_msgs::TransformStamped world_target_tf;
+//    geometry_msgs::TransformStamped ee_target_tf;
+//    for (int i=0; i< 10; i++) {
+//        try {
+//            world_target_tf = tfBuffer.lookupTransform("world", "target_frame",
+//                                                        ros::Time(0), timeout);
+//        }
+//        catch (tf2::TransformException &ex) {
+//            ROS_WARN("%s", ex.what());
+//            ros::Duration(1.0).sleep();
+//            continue;
+//        }
+//
+//        try {
+//            ee_target_tf = tfBuffer.lookupTransform("target_frame", "left_ee_link",
+//                                                 ros::Time(0), timeout);
+//        }
+//        catch (tf2::TransformException &ex) {
+//            ROS_WARN("%s", ex.what());
+//            ros::Duration(1.0).sleep();
+//            continue;
+//        }
+//    }
+//
+//    geometry_msgs::Pose world_target{target};
+//    world_target.position.x = world_target_tf.transform.translation.x;
+//    world_target.position.y = world_target_tf.transform.translation.y;
+//    world_target.position.z = world_target_tf.transform.translation.z;
+//    world_target.orientation.x = ee_target_tf.transform.rotation.x;
+//    world_target.orientation.y = ee_target_tf.transform.rotation.y;
+//    world_target.orientation.z = ee_target_tf.transform.rotation.z;
+//    world_target.orientation.w = ee_target_tf.transform.rotation.w;
+//
+//    return world_target;
+//}
+
 geometry_msgs::Pose GantryControl::getTargetWorldPose(geometry_msgs::Pose target,
                                                       std::string agv){
     static tf2_ros::StaticTransformBroadcaster br;
     geometry_msgs::TransformStamped transformStamped;
 
     std::string kit_tray;
-    if (agv.compare("agv1")==0)
+    if (agv == "agv1")
         kit_tray = "kit_tray_1";
     else
         kit_tray = "kit_tray_2";
     transformStamped.header.stamp = ros::Time::now();
-    transformStamped.header.frame_id = "kit_tray_2";
+    transformStamped.header.frame_id = kit_tray;
     transformStamped.child_frame_id = "target_frame";
     transformStamped.transform.translation.x = target.position.x;
     transformStamped.transform.translation.y = target.position.y;
@@ -267,7 +356,7 @@ geometry_msgs::Pose GantryControl::getTargetWorldPose(geometry_msgs::Pose target
     for (int i=0; i< 10; i++) {
         try {
             world_target_tf = tfBuffer.lookupTransform("world", "target_frame",
-                                                        ros::Time(0), timeout);
+                                                       ros::Time(0), timeout);
         }
         catch (tf2::TransformException &ex) {
             ROS_WARN("%s", ex.what());
@@ -277,7 +366,7 @@ geometry_msgs::Pose GantryControl::getTargetWorldPose(geometry_msgs::Pose target
 
         try {
             ee_target_tf = tfBuffer.lookupTransform("target_frame", "left_ee_link",
-                                                 ros::Time(0), timeout);
+                                                    ros::Time(0), timeout);
         }
         catch (tf2::TransformException &ex) {
             ROS_WARN("%s", ex.what());
@@ -297,6 +386,8 @@ geometry_msgs::Pose GantryControl::getTargetWorldPose(geometry_msgs::Pose target
 
     return world_target;
 }
+
+
 
 geometry_msgs::Pose GantryControl::getTargetWorldPose_right_arm(geometry_msgs::Pose target,
                                                                 std::string agv) {
@@ -530,19 +621,41 @@ bool GantryControl::pickPart(part part){
 //    ros::waitForShutdown();
 }
 
-void GantryControl::placePart(part part, std::string agv){
-   auto target_pose_in_tray = getTargetWorldPose(part.pose, agv);
-//    ros::Duration(3.0).sleep();
-    goToPresetLocation(agv2_);
-    target_pose_in_tray.position.z += (ABOVE_TARGET + 1.5*model_height[part.type]);
+    void GantryControl::placePart(part part, std::string agv){
+        auto target_pose_in_tray = getTargetWorldPose(part.pose, agv);
+        if(agv == "agv2") {
+            goToPresetLocation(agv2_);
+        }
+        else{
+            ROS_INFO_STREAM("-------------IN AGV 1-----------------");
+            goToPresetLocation(agv1_);
+        }
 
-    left_arm_group_.setPoseTarget(target_pose_in_tray);
-    left_arm_group_.move();
-    deactivateGripper("left_arm");
+
+        target_pose_in_tray.position.z += (ABOVE_TARGET + 1.5 * model_height[part.type]);
+        left_arm_group_.setPoseTarget(target_pose_in_tray);
+        left_arm_group_.move();
+        deactivateGripper("left_arm");
 //    auto state = getGripperState("left_arm");
 //    if (state.attached)
 //        goToPresetLocation(start_);
-}
+    }
+
+
+//void GantryControl::placePart(part part, std::string agv){
+//   auto target_pose_in_tray = getTargetWorldPose(part.pose, agv);
+////    ros::Duration(3.0).sleep();
+//    goToPresetLocation(agv1_);
+////    goToPresetLocation(agv2_);
+//    target_pose_in_tray.position.z += (ABOVE_TARGET + 1.5*model_height[part.type]);
+//
+//    left_arm_group_.setPoseTarget(target_pose_in_tray);
+//    left_arm_group_.move();
+//    deactivateGripper("left_arm");
+////    auto state = getGripperState("left_arm");
+////    if (state.attached)
+////        goToPresetLocation(start_);
+//}
 
 void GantryControl::goToPresetLocation(PresetLocation location) {
     //--gantry

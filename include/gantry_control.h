@@ -69,6 +69,7 @@ class GantryControl {
     //--preset locations;
     start start_;
     bin3 bin3_;
+    agv1 agv1_;
     agv2 agv2_;
     agv2_drop agv2_drop_;
     bin13 bin13_;
@@ -79,6 +80,7 @@ class GantryControl {
     waypoint_2 waypoint_2_;
     waypoint_3 waypoint_3_;
     waypoint_4 waypoint_4_;
+    test_pos test_pos_;
 
     pose_change pose_change_1, pose_change_2;
     agv2_flip agv2_flip_;

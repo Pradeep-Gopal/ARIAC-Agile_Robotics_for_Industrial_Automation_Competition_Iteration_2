@@ -83,7 +83,6 @@ void Competition::pre_kitting()
             shipment_instance.shipment_type = orders_vector[i].shipments[j].shipment_type;
             shipment_instance.agv_id  = orders_vector[i].shipments[j].agv_id;
             shipment_instance.products  = orders_vector[i].shipments[j].products;
-
             shipment_vector.push_back(shipment_instance);
 
 //            ROS_INFO_STREAM("==========================PARTS TO BE PICKED==============================");
@@ -246,7 +245,7 @@ void Competition::logical_camera_callback(const nist_gear::LogicalCameraImage::C
             otopic_part.clear();
             otopic_part << msg->models[i].type << "_" << cam_idx << "_" << part_no;
             topic_part = otopic_part.str();
-            if (cam_idx == 17){
+            if (cam_idx == 16){
                 parts_from_17_camera[0].type = msg->models[i].type;
                 parts_from_17_camera[0].pose.position.x = tx;
                 parts_from_17_camera[0].pose.position.y = ty;
