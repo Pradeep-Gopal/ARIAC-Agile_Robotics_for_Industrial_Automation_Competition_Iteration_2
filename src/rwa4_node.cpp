@@ -43,12 +43,14 @@ bool part_placed = false;
 int k = 0, i = 0, temp = 45;
 const double flip = -3.14159;
 part faulty_part;
-int parts_delivered = 0;
+//int parts_delivered = 0;
 int size_of_order = 0;
+std::string shipment_type, agv_id;
+int parts_delivered[5]{};
 
 // AVG id(= 1,2) to identify what AVG to submit to
 // shipment_type is the order type
-bool submitOrder(int AVG_id, std::string shipment_type){
+bool submitOrder(std::string AVG_id, std::string shipment_type){
     ROS_INFO("[submitOrder] Submitting order via AVG");
 
     // Create a node to call service from. Would be better to use one existing node
@@ -59,9 +61,9 @@ bool submitOrder(int AVG_id, std::string shipment_type){
     ros::ServiceClient avg_client;
 
     // Assign the service client to the correct service
-    if(AVG_id == 1){
+    if(AVG_id == "agv1"){
         avg_client = node.serviceClient<nist_gear::AGVControl>("/ariac/agv1");
-    }else if(AVG_id == 2){
+    }else if(AVG_id == "agv2"){
         avg_client = node.serviceClient<nist_gear::AGVControl>("/ariac/agv2");
     }else{
         ROS_ERROR_STREAM("[submitOrder] No AVG with id " << AVG_id <<". Valid ids are 1 and 2 only");
@@ -127,8 +129,9 @@ int main(int argc, char ** argv) {
     master_vector_main = comp.get_master_vector();
 
     LOOP3:for(i; i < comp.get_received_order_vector().size();  i++) {
-        parts_delivered = 0;
     for (int j = 0; j < comp.get_received_order_vector()[i].shipments.size(); j++) {
+        shipment_type = comp.get_received_order_vector()[i].shipments[j].shipment_type;
+        agv_id = comp.get_received_order_vector()[i].shipments[j].agv_id;
 
         k = 0;
         LOOP:while(k< comp.get_received_order_vector()[i].shipments[j].products.size()) {
@@ -241,7 +244,7 @@ int main(int argc, char ** argv) {
                                     //                                    comp.print_parts_to_pick();
                                     ROS_INFO_STREAM("Go to Loop Triggered");
                                     master_vector_main[i][j][k].delivered = true;
-                                    parts_delivered++;
+                                    parts_delivered[i]++;
                                     comp.setter_delivered(i, j, k);
                                     ROS_INFO_STREAM(" i j k" << i << j << k);
                                     ROS_INFO_STREAM(parts_from_camera_main[l][m].type << "  successfully delivered");
@@ -321,7 +324,7 @@ int main(int argc, char ** argv) {
                                     //                                    comp.print_parts_to_pick();
                                     ROS_INFO_STREAM("Go to Loop Triggered");
                                     master_vector_main[i][j][k].delivered = true;
-                                    parts_delivered++;
+                                    parts_delivered[i]++;
                                     comp.setter_delivered(i, j, k);
                                     ROS_INFO_STREAM(" i j k" << i << j << k);
                                     ROS_INFO_STREAM(parts_from_camera_main[l][m].type << "  successfully delivered");
@@ -414,7 +417,7 @@ int main(int argc, char ** argv) {
                                     //                                    comp.print_parts_to_pick();
                                     ROS_INFO_STREAM("Go to Loop Triggered");
                                     master_vector_main[i][j][k].delivered = true;
-                                    parts_delivered++;
+                                    parts_delivered[i]++;
                                     comp.setter_delivered(i, j, k);
                                     ROS_INFO_STREAM(
                                             "Checking delivered status" << master_vector_main[i][j][k].delivered);
@@ -509,7 +512,7 @@ int main(int argc, char ** argv) {
                                 } else {
                                     //                                    comp.print_parts_to_pick();
                                     master_vector_main[i][j][k].delivered = true;
-                                    parts_delivered++;
+                                    parts_delivered[i]++;
                                     comp.setter_delivered(i, j, k);
                                     ROS_INFO_STREAM(" i j k" << i << j << k);
                                     ROS_INFO_STREAM(parts_from_camera_main[l][m].type << "  successfully delivered");
@@ -623,7 +626,7 @@ int main(int argc, char ** argv) {
                                 } else {
                                     //                                    comp.print_parts_to_pick();
                                     master_vector_main[i][j][k].delivered = true;
-                                    parts_delivered++;
+                                    parts_delivered[i]++;
                                     comp.setter_delivered(i, j, k);
                                     ROS_INFO_STREAM(" i j k" << i << j << k);
                                     ROS_INFO_STREAM(parts_from_camera_main[l][m].type << "  successfully delivered");
@@ -648,12 +651,16 @@ int main(int argc, char ** argv) {
         k++;
     }
     }
-
-    if(parts_delivered == size_of_order){
+    ROS_INFO_STREAM("No of parts delivered = " << parts_delivered[i]);
+    ROS_INFO_STREAM("Order Size = " << size_of_order);
+    if(parts_delivered[i] == size_of_order){
         ROS_INFO_STREAM(" Order " << i << "completed successfully");
         comp.delete_completed_order(i);
         ROS_INFO_STREAM(" Order " << i << "deleted successfully");
         ROS_INFO_STREAM("Size of vector now = " << comp.get_received_order_vector().size());
+
+        ROS_INFO_STREAM("Delivering Shipment type = " << shipment_type << "  in agv = " <<agv_id);
+        submitOrder(agv_id, shipment_type);
     }
 
 }
@@ -664,7 +671,7 @@ int main(int argc, char ** argv) {
     ros::Duration timeout(5.0);
     if((i > 1) && (temp!= i-2))
     {
-        ROS_INFO_STREAM("2wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
+        ROS_INFO_STREAM("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
         i = i-2;
         k = 0;
         ROS_INFO_STREAM("Executing Order = " << i-1);
@@ -673,7 +680,7 @@ int main(int argc, char ** argv) {
         goto LOOP3;
     }
 
-    submitOrder(2, "order_0_shipment_0");
+//    submitOrder(2, "order_0_shipment_0");
     ROS_INFO_STREAM("Mangathaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa DaWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
 
     comp.endCompetition();
