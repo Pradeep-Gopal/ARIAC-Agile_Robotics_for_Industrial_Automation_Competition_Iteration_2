@@ -472,7 +472,7 @@ bool GantryControl::pickPart(part part){
         auto state = getGripperState("left_arm");
         if (state.attached) {
             ROS_INFO_STREAM("[Gripper] = object attached");
-            //--Move arm to previous position
+            //--Move arm to previous positio
 //            left_arm_group_.setPoseTarget(currentPose);
 //            left_arm_group_.move();
 //            goToPresetLocation(start_);
