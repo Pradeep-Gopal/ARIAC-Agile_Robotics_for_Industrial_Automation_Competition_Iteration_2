@@ -157,9 +157,9 @@ std::array<std::array<part, 20>, 20> Competition::get_parts_from_camera()
     return parts_from_camera;
 }
 
-std::array<part, 1> Competition::get_parts_from_17_camera()
+std::array<part, 20> Competition::get_parts_from_16_camera()
 {
-    return parts_from_17_camera;
+    return parts_from_16_camera;
 }
 
 std::vector<std::vector<std::vector<master_struct> > > Competition::get_master_vector()
@@ -246,16 +246,18 @@ void Competition::logical_camera_callback(const nist_gear::LogicalCameraImage::C
             otopic_part << msg->models[i].type << "_" << cam_idx << "_" << part_no;
             topic_part = otopic_part.str();
             if (cam_idx == 16){
-                parts_from_17_camera[0].type = msg->models[i].type;
-                parts_from_17_camera[0].pose.position.x = tx;
-                parts_from_17_camera[0].pose.position.y = ty;
-                parts_from_17_camera[0].pose.position.z = tz;
-                parts_from_17_camera[0].pose.orientation.x = pose_target.pose.orientation.x;
-                parts_from_17_camera[0].pose.orientation.y = pose_target.pose.orientation.y;
-                parts_from_17_camera[0].pose.orientation.z = pose_target.pose.orientation.z;
-                parts_from_17_camera[0].pose.orientation.w = pose_target.pose.orientation.w;
-                parts_from_17_camera[0].faulty = false;
-                parts_from_17_camera[0].picked = false;
+                if (!((msg->models[i].type).empty())) {
+                    parts_from_16_camera[i].type = msg->models[i].type;
+                    parts_from_16_camera[i].pose.position.x = tx;
+                    parts_from_16_camera[i].pose.position.y = ty;
+                    parts_from_16_camera[i].pose.position.z = tz;
+                    parts_from_16_camera[i].pose.orientation.x = pose_target.pose.orientation.x;
+                    parts_from_16_camera[i].pose.orientation.y = pose_target.pose.orientation.y;
+                    parts_from_16_camera[i].pose.orientation.z = pose_target.pose.orientation.z;
+                    parts_from_16_camera[i].pose.orientation.w = pose_target.pose.orientation.w;
+                    parts_from_16_camera[i].faulty = false;
+                    parts_from_16_camera[i].picked = false;
+                }
 //                ROS_INFO_STREAM("-----accessing part from the 17 array------");
 //                ROS_INFO_STREAM(parts_from_17_camera[0].type);
 //                ROS_INFO_STREAM(parts_from_17_camera[0].pose.position.x );

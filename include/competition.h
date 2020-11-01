@@ -29,7 +29,7 @@ public:
     void logical_camera_callback(const nist_gear::LogicalCameraImage::ConstPtr & msg, int cam_idx);
     void quality_control_sensor_1_subscriber_callback(const nist_gear::LogicalCameraImage::ConstPtr & msg);
     std::array<std::array<part, 20>, 20> get_parts_from_camera();
-    std::array <part, 1> get_parts_from_17_camera();
+    std::array <part, 20> get_parts_from_16_camera();
     part get_quality_sensor_status();
     std::vector<std::vector<std::vector<master_struct> > > get_master_vector();
     void print_parts_detected();
@@ -43,7 +43,7 @@ public:
     double getStartTime();
     std::string getCompetitionState();
     stats getStats(std::string function);
-    std::array<part, 1> parts_from_17_camera;
+    std::array<part, 20> parts_from_16_camera;
 private:
     ros::NodeHandle node_;
 
