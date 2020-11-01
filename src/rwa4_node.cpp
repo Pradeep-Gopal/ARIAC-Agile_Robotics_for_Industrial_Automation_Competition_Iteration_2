@@ -469,7 +469,7 @@ int main(int argc, char ** argv) {
     }
 
     gantry.goToPresetLocation(gantry.start_);
-    submitOrder(1, "order_0_shipment_0");
+    submitOrder(2, "order_0_shipment_0");
 
     comp.endCompetition();
     spinner.stop();
