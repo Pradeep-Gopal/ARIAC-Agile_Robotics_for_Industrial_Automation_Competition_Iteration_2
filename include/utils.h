@@ -22,7 +22,7 @@ typedef struct Product product;
 const double PI = 3.141592; // TODO correct!
 
 // Logical cameras
-const int MAX_NUMBER_OF_CAMERAS = 17;
+const int MAX_NUMBER_OF_CAMERAS = 18;
 
 
 
