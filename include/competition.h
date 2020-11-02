@@ -20,9 +20,9 @@
 class Competition
 {
 public:
+    //--methods
     explicit Competition(ros::NodeHandle & node);
     void init();
-
     void startCompetition();
     void endCompetition();
     void competition_state_callback(const std_msgs::String::ConstPtr & msg);
@@ -44,6 +44,12 @@ public:
     std::vector<nist_gear::Order> get_received_order_vector();
     void setter_delivered(int i, int j, int k);
     void delete_completed_order(int i);
+    std::array <part, 20> get_parts_from_16_camera();
+    std::array <part, 20> get_parts_from_17_camera();
+
+    //--attributes
+    std::array<part, 20> parts_from_16_camera;
+    std::array<part, 20> parts_from_17_camera;
 
 private:
     ros::NodeHandle node_;

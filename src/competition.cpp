@@ -203,12 +203,7 @@ void Competition::logical_camera_callback(const nist_gear::LogicalCameraImage::C
 
     geometry_msgs::PoseStamped pose_target, pose_rel;
     if(msg->models.size() != 0){
-
-        // ROS_INFO_STREAM("Camera_id : " << cam_idx);
-        // ROS_INFO_STREAM("Logical camera: '" << msg->models.size() << "' objects.");
         int part_no = 0;
-//        ROS_INFO_STREAM("Parts detected by Logical camera " << cam_idx);
-//        ROS_INFO_STREAM(" ");
         for(int i = 0; i<msg->models.size(); i++)
         {
             part_no++;
@@ -232,8 +227,6 @@ void Competition::logical_camera_callback(const nist_gear::LogicalCameraImage::C
                 continue;
             }
             tf2::doTransform(pose_rel, pose_target, transformStamped);
-            // ROS_INFO_STREAM("Camera coordinates of " << topic << " no of parts - " << msg->models.size());
-            // ROS_INFO_STREAM(pose_target);
 
             double tx = pose_target.pose.position.x;
             double ty = pose_target.pose.position.y;
@@ -257,6 +250,35 @@ void Competition::logical_camera_callback(const nist_gear::LogicalCameraImage::C
             otopic_part.clear();
             otopic_part << msg->models[i].type << "_" << cam_idx << "_" << part_no;
             topic_part = otopic_part.str();
+            if (cam_idx == 16){
+                if (!((msg->models[i].type).empty())) {
+                    parts_from_16_camera[i].type = msg->models[i].type;
+                    parts_from_16_camera[i].pose.position.x = tx;
+                    parts_from_16_camera[i].pose.position.y = ty;
+                    parts_from_16_camera[i].pose.position.z = tz;
+                    parts_from_16_camera[i].pose.orientation.x = pose_target.pose.orientation.x;
+                    parts_from_16_camera[i].pose.orientation.y = pose_target.pose.orientation.y;
+                    parts_from_16_camera[i].pose.orientation.z = pose_target.pose.orientation.z;
+                    parts_from_16_camera[i].pose.orientation.w = pose_target.pose.orientation.w;
+                    parts_from_16_camera[i].faulty = false;
+                    parts_from_16_camera[i].picked = false;
+                }
+            }
+
+            if (cam_idx == 17){
+                if (!((msg->models[i].type).empty())) {
+                    parts_from_17_camera[i].type = msg->models[i].type;
+                    parts_from_17_camera[i].pose.position.x = tx;
+                    parts_from_17_camera[i].pose.position.y = ty;
+                    parts_from_17_camera[i].pose.position.z = tz;
+                    parts_from_17_camera[i].pose.orientation.x = pose_target.pose.orientation.x;
+                    parts_from_17_camera[i].pose.orientation.y = pose_target.pose.orientation.y;
+                    parts_from_17_camera[i].pose.orientation.z = pose_target.pose.orientation.z;
+                    parts_from_17_camera[i].pose.orientation.w = pose_target.pose.orientation.w;
+                    parts_from_17_camera[i].faulty = false;
+                    parts_from_17_camera[i].picked = false;
+                }
+            }
 
             parts_from_camera[cam_idx][i].type = msg->models[i].type;
             parts_from_camera[cam_idx][i].pose.position.x = tx;
@@ -268,18 +290,8 @@ void Competition::logical_camera_callback(const nist_gear::LogicalCameraImage::C
             parts_from_camera[cam_idx][i].pose.orientation.w = pose_target.pose.orientation.w;
             parts_from_camera[cam_idx][i].faulty = false;
             parts_from_camera[cam_idx][i].picked = false;
-
-            // Output the measure
-//            ROS_INFO("'%s' in '%s' frame : X: %.2f Y: %.2f Z: %.2f - R: %.2f P: %.2f Y: %.2f",
-//                     topic.c_str(),
-//                     pose_target.header.frame_id.c_str(),
-//                     tx, ty, tz,
-//                     roll, pitch, yaw);
-
         }
 
-//        ROS_INFO_STREAM(" ");
-//        ROS_INFO_STREAM(" ");
     }
 }
 
@@ -298,6 +310,16 @@ void Competition::order_callback(const nist_gear::Order::ConstPtr & msg) {
     ROS_INFO_STREAM("Received order:\n" << *msg);
     received_orders_.push_back(*msg);
     Competition::pre_kitting();
+}
+
+std::array<part, 20> Competition::get_parts_from_16_camera()
+{
+    return parts_from_16_camera;
+}
+
+std::array<part, 20> Competition::get_parts_from_17_camera()
+{
+    return parts_from_17_camera;
 }
 
 void Competition::quality_control_sensor_1_subscriber_callback(const nist_gear::LogicalCameraImage::ConstPtr & msg)
