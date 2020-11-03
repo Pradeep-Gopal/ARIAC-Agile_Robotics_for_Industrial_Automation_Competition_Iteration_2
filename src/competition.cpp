@@ -82,10 +82,10 @@ void Competition::pre_kitting()
     // Populating Orders vector
     for (p; p < received_orders_.size(); p++)
     {
-        ROS_INFO_STREAM("ORDER NUMBER    =    " << p);
+//        ROS_INFO_STREAM("ORDER NUMBER    =    " << p);
         order order_instance;
         order_instance.order_id = received_orders_[p].order_id;
-        ROS_INFO_STREAM("Order IDDDDDDDDDDDDDDDDDDDDD = " << order_instance.order_id);
+//        ROS_INFO_STREAM("Order ID = " << order_instance.order_id);
         order_instance.shipments = received_orders_[p].shipments;
         orders_vector.push_back(order_instance);
 
@@ -94,14 +94,14 @@ void Competition::pre_kitting()
         {
             shipment shipment_instance;
             shipment_instance.shipment_type = orders_vector[p].shipments[j].shipment_type;
-            ROS_INFO_STREAM("Shipment IDDDDDDDDDDDDDDDDDDDDD = " << shipment_instance.shipment_type);
+//            ROS_INFO_STREAM("Shipment ID = " << shipment_instance.shipment_type);
             shipment_instance.agv_id  = orders_vector[p].shipments[j].agv_id;
-            ROS_INFO_STREAM("AGV IDDDDDDDDDDDDDDDDDDDDD = " << orders_vector[p].shipments[j].agv_id);
-            ROS_INFO_STREAM("PRODUCTsssssssssssssssssS  = " << orders_vector[p].shipments[j].products.size());
+//            ROS_INFO_STREAM("AGV ID = " << orders_vector[p].shipments[j].agv_id);
+//            ROS_INFO_STREAM("PRODUCT  = " << orders_vector[p].shipments[j].products.size());
             shipment_instance.products  = orders_vector[p].shipments[j].products;
             shipment_vector.push_back(shipment_instance);
-            ROS_INFO_STREAM("Size of the orderrrrrrrrrrrrr = " << orders_vector[p].shipments[j].products.size());
-            ROS_INFO_STREAM("Product type = " << orders_vector[p].shipments[j].products[0].type);
+//            ROS_INFO_STREAM("Size of the order = " << orders_vector[p].shipments[j].products.size());
+//            ROS_INFO_STREAM("Product type = " << orders_vector[p].shipments[j].products[0].type);
 
 
 
@@ -109,9 +109,9 @@ void Competition::pre_kitting()
             for (int k = 0; k < orders_vector[p].shipments[j].products.size(); k++)
             {
                 if(shipment_vector[j].products[k].type == ("pulley_part_red") || ("pulley_part_blue") || ("pulley_part_green") || ("piston_part_red") || ("piston_part_green") || ("piston_part_blue") || ("disk_part_red") || ("disk_part_green") || ("disk_part_blue") || ("gasket_part_red") || ("gasket_part_green") || ("gasket_part_blue") ) {
-                    ROS_INFO_STREAM("Part kidachiduchu doiiii");
-                    ROS_INFO_STREAM(orders_vector[p].shipments[j].products[k].type);
-                    ROS_INFO_STREAM(orders_vector[p].shipments[j].products[k].pose);
+//                    ROS_INFO_STREAM("Part from prekitting function");
+//                    ROS_INFO_STREAM(orders_vector[p].shipments[j].products[k].type);
+//                    ROS_INFO_STREAM(orders_vector[p].shipments[j].products[k].pose);
 
                     part part_to_be_placed;
                     part_to_be_placed.type = orders_vector[p].shipments[j].products[k].type;
@@ -141,7 +141,7 @@ void Competition::pre_kitting()
         }
     }
 
-    ROS_INFO_STREAM(" PPPPPPPPPPPPPPPPPPPPPPPPPPPPP ==== " << p);
+//    ROS_INFO_STREAM(" P = " << p);
 //    Competition::print_parts_to_pick();
 //    ROS_INFO_STREAM("===================Thats all folks!!!!======================");
 }
@@ -150,9 +150,9 @@ void Competition::print_parts_to_pick()
 {
     ROS_INFO_STREAM("Parts in master vector");
     for(int i=0; i < 10;  i++) {
-        ROS_INFO_STREAM("ORder Nooooooooooooooooooooooo = " << i);
+        ROS_INFO_STREAM("ORder No = " << i);
         for (int j = 0; j < 10; j++) {
-//            ROS_INFO_STREAM("SHipment NOOOOOOOOOOOOOOOOOOOOOO = " << j);
+//            ROS_INFO_STREAM("SHipment NO = " << j);
             for (int k = 0; k < 20; k++) {
                 if((master_vector[i][j][k].type == "pulley_part_red") || (master_vector[i][j][k].type == "pulley_part_blue") || (master_vector[i][j][k].type == "pulley_part_green")|| (master_vector[i][j][k].type == "disk_part_blue")|| (master_vector[i][j][k].type == "disk_part_red")|| (master_vector[i][j][k].type == "disk_part_green")|| (master_vector[i][j][k].type == "piston_part_blue")|| (master_vector[i][j][k].type == "piston_part_green")|| (master_vector[i][j][k].type == "piston_part_red")|| (master_vector[i][j][k].type == "gasket_part_blue")|| (master_vector[i][j][k].type == "gasket_part_red")|| (master_vector[i][j][k].type == "gasket_part_green"))
                 {

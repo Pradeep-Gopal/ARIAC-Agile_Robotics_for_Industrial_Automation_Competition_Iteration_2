@@ -277,16 +277,14 @@ geometry_msgs::Pose GantryControl::getTargetWorldPose(geometry_msgs::Pose target
                                                       std::string agv){
     static tf2_ros::StaticTransformBroadcaster br;
     geometry_msgs::TransformStamped transformStamped;
-    ROS_INFO_STREAM("Before transform, pose in tray coordinates for " << agv);
-    ROS_INFO_STREAM(target);
     std::string kit_tray;
     if (agv.compare("agv1")==0) {
-        ROS_INFO_STREAM("AGV1?" << agv);
+//        ROS_INFO_STREAM("AGV1?" << agv);
         kit_tray = "kit_tray_1";
     }
     else {
         kit_tray = "kit_tray_2";
-        ROS_INFO_STREAM(" which AGV?" << agv);
+//        ROS_INFO_STREAM(" which AGV?" << agv);
     }
 
     transformStamped.header.stamp = ros::Time::now();
