@@ -213,6 +213,8 @@ void Competition::logical_camera_callback(const nist_gear::LogicalCameraImage::C
             topic = otopic.str();
             // ROS_INFO_STREAM(topic);
             ros::Duration timeout(5.0);
+
+
             geometry_msgs::TransformStamped transformStamped;
             pose_rel.header.frame_id = "logical_camera_" + std::to_string(cam_idx) + "_frame";
             pose_rel.pose = msg->models[i].pose;

@@ -45,14 +45,14 @@ void GantryControl::init() {
     bin16_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
 
 //    disk_part_green located in bin13
-    bin13_.gantry = {2.0, 2.35,0.0};
-    bin13_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
-    bin13_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
-
-//    bin13_.gantry = {2.55, -1.58, 1.54};
-//    bin13_.gantry = {2.55, 1.54, -1.58};
+//    bin13_.gantry = {2.0, 2.35,0.0};
 //    bin13_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
 //    bin13_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
+
+//    bin13_.gantry = {2.55, -1.58, 1.54};
+    bin13_.gantry = {2.55, 1.56, -1.58};
+    bin13_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
+    bin13_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
 
 //    pulley_part_red located on waypoint_1
     waypoint_1_.gantry = {0.0, -4.7, 0.0};
@@ -104,7 +104,7 @@ void GantryControl::init() {
     agv1_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
     agv1_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
 
-    //    Agv2 Drop location
+    //    Agv2 faulty part Drop location
     agv2_drop_.gantry = {1, 6.9, PI};
     agv2_drop_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
     agv2_drop_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
@@ -277,12 +277,18 @@ geometry_msgs::Pose GantryControl::getTargetWorldPose(geometry_msgs::Pose target
                                                       std::string agv){
     static tf2_ros::StaticTransformBroadcaster br;
     geometry_msgs::TransformStamped transformStamped;
-
+    ROS_INFO_STREAM("Before transform, pose in tray coordinates for " << agv);
+    ROS_INFO_STREAM(target);
     std::string kit_tray;
-    if (agv == "agv1")
+    if (agv.compare("agv1")==0) {
+        ROS_INFO_STREAM("AGV1?" << agv);
         kit_tray = "kit_tray_1";
-    else
+    }
+    else {
         kit_tray = "kit_tray_2";
+        ROS_INFO_STREAM(" which AGV?" << agv);
+    }
+
     transformStamped.header.stamp = ros::Time::now();
     transformStamped.header.frame_id = kit_tray;
     transformStamped.child_frame_id = "target_frame";
@@ -309,7 +315,7 @@ geometry_msgs::Pose GantryControl::getTargetWorldPose(geometry_msgs::Pose target
     for (int i=0; i< 10; i++) {
         try {
             world_target_tf = tfBuffer.lookupTransform("world", "target_frame",
-                                                        ros::Time(0), timeout);
+                                                       ros::Time(0), timeout);
         }
         catch (tf2::TransformException &ex) {
             ROS_WARN("%s", ex.what());
@@ -319,7 +325,7 @@ geometry_msgs::Pose GantryControl::getTargetWorldPose(geometry_msgs::Pose target
 
         try {
             ee_target_tf = tfBuffer.lookupTransform("target_frame", "left_ee_link",
-                                                 ros::Time(0), timeout);
+                                                    ros::Time(0), timeout);
         }
         catch (tf2::TransformException &ex) {
             ROS_WARN("%s", ex.what());
@@ -327,7 +333,6 @@ geometry_msgs::Pose GantryControl::getTargetWorldPose(geometry_msgs::Pose target
             continue;
         }
     }
-
     geometry_msgs::Pose world_target{target};
     world_target.position.x = world_target_tf.transform.translation.x;
     world_target.position.y = world_target_tf.transform.translation.y;
@@ -336,7 +341,6 @@ geometry_msgs::Pose GantryControl::getTargetWorldPose(geometry_msgs::Pose target
     world_target.orientation.y = ee_target_tf.transform.rotation.y;
     world_target.orientation.z = ee_target_tf.transform.rotation.z;
     world_target.orientation.w = ee_target_tf.transform.rotation.w;
-
     return world_target;
 }
 
@@ -426,14 +430,13 @@ void GantryControl::placePart_right_arm(part part, std::string agv){
 geometry_msgs::Pose GantryControl::getTargetWorldPose_dummy(geometry_msgs::Pose target,
                                                       std::string agv){
     geometry_msgs::TransformStamped transformStamped;
-
     std::string kit_tray;
     if (agv.compare("agv1")==0)
         kit_tray = "kit_tray_1";
     else
         kit_tray = "kit_tray_2";
     transformStamped.header.stamp = ros::Time::now();
-    transformStamped.header.frame_id = "kit_tray_2";
+    transformStamped.header.frame_id = kit_tray;
     transformStamped.child_frame_id = "target_frame";
     transformStamped.transform.translation.x = target.position.x;
     transformStamped.transform.translation.y = target.position.y;
@@ -578,7 +581,8 @@ bool GantryControl::pickPart(part part){
 }
 
 void GantryControl::placePart(part part, std::string agv){
-   auto target_pose_in_tray = getTargetWorldPose(part.pose, agv);
+    geometry_msgs::Pose target_pose_in_tray = getTargetWorldPose(part.pose, agv);
+
     if(agv == "agv2") {
         goToPresetLocation(agv2_);
     }
