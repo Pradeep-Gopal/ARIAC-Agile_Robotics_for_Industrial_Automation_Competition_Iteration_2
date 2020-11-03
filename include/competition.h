@@ -48,8 +48,10 @@ public:
     std::array <part, 20> get_parts_from_17_camera();
 
     //--attributes
+    std::array<part, 20> parts_from_15_camera;
     std::array<part, 20> parts_from_16_camera;
     std::array<part, 20> parts_from_17_camera;
+    bool conveyor_belt_part_status = false;
 
 private:
     ros::NodeHandle node_;

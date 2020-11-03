@@ -48,6 +48,7 @@ void Competition::init() {
     quality_control_sensor_1_subscriber_ = node_.subscribe(
             "/ariac/quality_control_sensor_1", 10, &Competition::quality_control_sensor_1_subscriber_callback, this);
 
+
   startCompetition();
 
   init_.total_time += ros::Time::now().toSec() - time_called;
@@ -252,6 +253,26 @@ void Competition::logical_camera_callback(const nist_gear::LogicalCameraImage::C
             otopic_part.clear();
             otopic_part << msg->models[i].type << "_" << cam_idx << "_" << part_no;
             topic_part = otopic_part.str();
+
+            if (cam_idx == 15){
+                if (!((msg->models[i].type).empty())) {
+                    parts_from_15_camera[i].type = msg->models[i].type;
+                    parts_from_15_camera[i].pose.position.x = tx;
+                    parts_from_15_camera[i].pose.position.y = ty;
+                    parts_from_15_camera[i].pose.position.z = tz;
+                    parts_from_15_camera[i].pose.orientation.x = pose_target.pose.orientation.x;
+                    parts_from_15_camera[i].pose.orientation.y = pose_target.pose.orientation.y;
+                    parts_from_15_camera[i].pose.orientation.z = pose_target.pose.orientation.z;
+                    parts_from_15_camera[i].pose.orientation.w = pose_target.pose.orientation.w;
+                    parts_from_15_camera[i].faulty = false;
+                    parts_from_15_camera[i].picked = false;
+                    if(msg->models.size() > 0)
+                    {
+                        conveyor_belt_part_status = true;
+                    }
+
+                }
+            }
             if (cam_idx == 16){
                 if (!((msg->models[i].type).empty())) {
                     parts_from_16_camera[i].type = msg->models[i].type;
@@ -336,6 +357,7 @@ void Competition::quality_control_sensor_1_subscriber_callback(const nist_gear::
     else
         faulty_part_agv2.faulty = false;
 }
+
 
 /// Called when a new message is received.
 void Competition::competition_clock_callback(const rosgraph_msgs::Clock::ConstPtr & msg) {
