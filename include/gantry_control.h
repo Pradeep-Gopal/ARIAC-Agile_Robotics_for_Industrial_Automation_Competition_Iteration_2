@@ -80,9 +80,9 @@ class GantryControl {
     waypoint_3 waypoint_3_;
     waypoint_4 waypoint_4_;
 
-    pose_change pose_change_1, pose_change_2;
-    agv2_flip agv2_flip_;
-    flip_target flip_target_;
+    pose_change pose_change_1_agv1, pose_change_2_agv1,pose_change_1_agv2,pose_change_2_agv2;
+    agv2_flip agv2_flip_,agv1_flip_;
+    flip_target agv2_flip_target_,agv1_flip_target_;
 
   private:
     std::vector<double> joint_group_positions_;

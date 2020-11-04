@@ -50,8 +50,13 @@ void GantryControl::init() {
 //    bin13_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
 
 //    bin13_.gantry = {2.55, -1.58, 1.54};
-    bin13_.gantry = {2.55, 1.56, -1.58};
-    bin13_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
+//    bin13_.gantry = {2.55, 1.56, -1.58};
+//    bin13_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
+//    bin13_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
+
+    //    bin13_.gantry = {2.55, -1.58, 1.54};
+    bin13_.gantry = {3.1, 1.68, 3.77};
+    bin13_.left_arm = {0.0, -0.63, 1.26, -0.65, PI/2, 0};
     bin13_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
 
 //    pulley_part_red located on waypoint_1
@@ -111,22 +116,42 @@ void GantryControl::init() {
 
     // pose change wavepoints
 
-    pose_change_1.gantry = {0.0,5,PI};
-    pose_change_1.left_arm = {PI/4,-0.2,1.3,0.5,PI/2,0.00};
-    pose_change_1.right_arm = {-PI/4,-3,-PI/2,-0.1,PI/2,-0.79};
+    pose_change_1_agv1.gantry = {0.0,-5,PI};
+    pose_change_1_agv1.left_arm = {PI/4,-0.2,1.3,0.5,PI/2,0.00};
+    pose_change_1_agv1.right_arm = {-PI/4,-3,-PI/2,-0.1,PI/2,-0.79};
 
     // switching wavepoint
-    pose_change_2.gantry = {0.0,5,PI};
-    pose_change_2.left_arm = {0.77,-0.2,1.3,0.49,1.59,0.00};
-    pose_change_2.right_arm = {-PI/4,-3.2,-1.5,-0.02,PI/2,-PI/4};
+    pose_change_2_agv1.gantry = {0.0,-5,PI};
+    pose_change_2_agv1.left_arm = {0.77,-0.2,1.3,0.49,1.59,0.00};
+    pose_change_2_agv1.right_arm = {-PI/4,-3.2,-1.5,-0.02,PI/2,-PI/4};
+
+    agv1_flip_.gantry = {0.0, -2, PI};
+    agv1_flip_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
+    agv1_flip_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
+
+    agv1_flip_target_.gantry = {-0.66, -6.9, PI};
+    agv1_flip_target_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
+    agv1_flip_target_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
+
+
+    // pose change wavepoints
+
+    pose_change_1_agv2.gantry = {0.0,5,PI};
+    pose_change_1_agv2.left_arm = {PI/4,-0.2,1.3,0.5,PI/2,0.00};
+    pose_change_1_agv2.right_arm = {-PI/4,-3,-PI/2,-0.1,PI/2,-0.79};
+
+    // switching wavepoint
+    pose_change_2_agv2.gantry = {0.0,5,PI};
+    pose_change_2_agv2.left_arm = {0.77,-0.2,1.3,0.49,1.59,0.00};
+    pose_change_2_agv2.right_arm = {-PI/4,-3.2,-1.5,-0.02,PI/2,-PI/4};
 
     agv2_flip_.gantry = {0.0, 2, PI};
     agv2_flip_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
     agv2_flip_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
 
-    flip_target_.gantry = {-0.6, 6.9, PI};
-    flip_target_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
-    flip_target_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
+    agv2_flip_target_.gantry = {-0.66, 6.9, PI};
+    agv2_flip_target_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
+    agv2_flip_target_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
 
     //Moving to shelf 8
     // gasket part green
@@ -363,7 +388,7 @@ geometry_msgs::Pose GantryControl::getTargetWorldPose_right_arm(geometry_msgs::P
     else
         kit_tray = "kit_tray_2";
     transformStamped.header.stamp = ros::Time::now();
-    transformStamped.header.frame_id = "kit_tray_2";
+    transformStamped.header.frame_id = kit_tray;
     transformStamped.child_frame_id = "target_frame";
     transformStamped.transform.translation.x = target.position.x;
     transformStamped.transform.translation.y = target.position.y;
