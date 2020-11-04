@@ -43,12 +43,12 @@ bool part_placed = false;
 int k = 0, i = 0, temp = 45;
 const double flip = -3.14159;
 part faulty_part;
-//int parts_delivered = 0;
 int size_of_order = 0;
 std::string shipment_type, agv_id;
 int parts_delivered[5]{};
 std::array<part, 20> parts_from_camera_16 ;
 std::array<part, 20> parts_from_camera_17 ;
+bool conveyor_part_picked = false;
 
 // AVG id(= 1,2) to identify what AVG to submit to
 // shipment_type is the order type
@@ -278,9 +278,36 @@ void fix_part_pose(Competition &comp, master_struct master_vector_main, GantryCo
     }
 }
 
+void pick_part_from_conveyor(Competition& comp, GantryControl& gantry){
+    ROS_INFO_STREAM("Picking up part from conveyor belt");
+    gantry.goToPresetLocation(gantry.start_);
+    ROS_INFO_STREAM("Start location reached");
+    // move above pick location above belt
+    gantry.goToPresetLocation(gantry.belt_pickup_);
+    ROS_INFO_STREAM("belt pick up location reached");
+
+    while(comp.breakbeam_conveyor_belt_part_status == false){
+        ROS_INFO_STREAM("Breakbeam sensor not triggered, waiting for triggering");
+    }
+    if(comp.breakbeam_conveyor_belt_part_status == true) {
+        ROS_INFO_STREAM("Breakbeam triggered");
+        part part_picking = comp.parts_from_15_camera[0];
+        part_picking.pose.position.y += 1.75;
+        ROS_INFO_STREAM("Attempting to pick " << part_picking.type <<" from " << part_picking.pose);
+        gantry.pickPart(part_picking);
+        ROS_INFO_STREAM("Part picked");
+        gantry.goToPresetLocation(gantry.belt_pickup_);
+        ROS_INFO_STREAM("belt pick up location reached");
+        gantry.goToPresetLocation(gantry.bin1_);
+        ROS_INFO_STREAM("bin 1 location reached");
+        gantry.deactivateGripper("left_arm");
+        ROS_INFO_STREAM("Gripper Deactivated");
+    }
+}
 
 
 int main(int argc, char ** argv) {
+
 
     ros::init(argc, argv, "rwa3_node");
     ros::NodeHandle node;
@@ -311,6 +338,10 @@ int main(int argc, char ** argv) {
 
     GantryControl gantry(node);
     gantry.init();
+
+//    gantry.goToPresetLocation(gantry.bin1_);
+//    while(true)
+//    {}
 
     parts_from_camera_main = comp.get_parts_from_camera();
     master_vector_main = comp.get_master_vector();
@@ -595,11 +626,14 @@ int main(int argc, char ** argv) {
                                     ROS_INFO_STREAM("AGV1 location reached");
                                 }
 
-
-
+                                //Fixing part pose if gripper is Faulty
                                 fix_part_pose(comp, master_vector_main[i][j][k], gantry, part_in_tray);
 
-
+                                // Checking if parts have arrived on conveyor belt
+                                if((comp.conveyor_belt_part_status == true) && (conveyor_part_picked == false))
+                                {
+                                    pick_part_from_conveyor(comp, gantry);
+                                }
 
                                 faulty_part = comp.get_quality_sensor_status();
                                 ROS_INFO_STREAM("Status of faulty part = ");

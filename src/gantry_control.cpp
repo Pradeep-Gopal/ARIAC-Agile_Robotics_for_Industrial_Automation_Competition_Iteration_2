@@ -164,6 +164,16 @@ void GantryControl::init() {
     shelf11_w4_.left_arm = {-2.79, -PI/4, PI/2, -PI/4, -1.39626, 0};
     shelf11_w4_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
 
+    // location where gantry hover to pick up part at belt
+    belt_pickup_.gantry = {0.15, -3, PI/2};
+    belt_pickup_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
+    belt_pickup_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
+
+    // location where gantry hover to pick up part at belt
+    bin1_.gantry = {2.75, - 0.77, PI/2};
+    bin1_.left_arm = {0.0, -PI/4, PI/2, -PI/4, PI/2, 0};
+    bin1_.right_arm = {PI, -PI/4, PI/2, -PI/4, PI/2, 0};
+
 //    tf2_ros::Buffer tfBuffer;
 //    tf2_ros::TransformListener tfListener(tfBuffer);
 //    ros::Rate rate(10);

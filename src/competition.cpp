@@ -1,6 +1,7 @@
 #include "competition.h"
 #include "utils.h"
 #include <nist_gear/LogicalCameraImage.h>
+#include <nist_gear/Proximity.h>
 #include <nist_gear/Order.h>
 #include <std_srvs/Trigger.h>
 #include "gantry_control.h"
@@ -48,11 +49,19 @@ void Competition::init() {
     quality_control_sensor_1_subscriber_ = node_.subscribe(
             "/ariac/quality_control_sensor_1", 10, &Competition::quality_control_sensor_1_subscriber_callback, this);
 
+    ROS_INFO("Subscribe to the /ariac/breakbeam_0");
+    breakbeam_sensor_1_subscriber_ = node_.subscribe(
+            "/ariac/breakbeam_0", 10, &Competition::breakbeam_sensor_1_callback, this);
+
 
   startCompetition();
 
   init_.total_time += ros::Time::now().toSec() - time_called;
 
+}
+
+void Competition::breakbeam_sensor_1_callback(const nist_gear::Proximity::ConstPtr & msg){
+    breakbeam_conveyor_belt_part_status = msg->object_detected;
 }
 
 void Competition::setter_delivered(int i, int j, int k)
@@ -255,7 +264,20 @@ void Competition::logical_camera_callback(const nist_gear::LogicalCameraImage::C
             topic_part = otopic_part.str();
 
             if (cam_idx == 15){
-                if (!((msg->models[i].type).empty())) {
+//                ROS_INFO_STREAM("Parts detected by 15 camera = " << msg->models.size());
+                if ((msg->models[i].type == "pulley_part_red") ||
+                    (msg->models[i].type == "pulley_part_blue") ||
+                    (msg->models[i].type == "pulley_part_green") ||
+                    (msg->models[i].type == "disk_part_blue") ||
+                    (msg->models[i].type == "disk_part_red") ||
+                    (msg->models[i].type == "disk_part_green") ||
+                    (msg->models[i].type == "piston_part_blue") ||
+                    (msg->models[i].type == "piston_part_green") ||
+                    (msg->models[i].type == "piston_part_red") ||
+                    (msg->models[i].type == "gasket_part_blue") ||
+                    (msg->models[i].type == "gasket_part_red") ||
+                    (msg->models[i].type == "gasket_part_green")) {
+
                     parts_from_15_camera[i].type = msg->models[i].type;
                     parts_from_15_camera[i].pose.position.x = tx;
                     parts_from_15_camera[i].pose.position.y = ty;
@@ -268,6 +290,7 @@ void Competition::logical_camera_callback(const nist_gear::LogicalCameraImage::C
                     parts_from_15_camera[i].picked = false;
                     if(msg->models.size() > 0)
                     {
+//                        ROS_INFO_STREAM("Camera Matrix loaded with conveyor belt part");
                         conveyor_belt_part_status = true;
                     }
 
