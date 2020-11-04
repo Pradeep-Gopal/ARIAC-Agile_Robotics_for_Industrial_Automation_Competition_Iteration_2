@@ -302,6 +302,12 @@ void pick_part_from_conveyor(Competition& comp, GantryControl& gantry){
         ROS_INFO_STREAM("bin 1 location reached");
         gantry.deactivateGripper("left_arm");
         ROS_INFO_STREAM("Gripper Deactivated");
+        gantry.goToPresetLocation(gantry.start_);
+        ROS_INFO_STREAM("Start Location Reached");
+
+        for(int l = 0; l < comp.parts_from_11_camera.size(); l++){
+            parts_from_camera_main[11][l] = comp.parts_from_11_camera[l];
+        }
     }
 }
 
@@ -339,9 +345,6 @@ int main(int argc, char ** argv) {
     GantryControl gantry(node);
     gantry.init();
 
-//    gantry.goToPresetLocation(gantry.bin1_);
-//    while(true)
-//    {}
 
     parts_from_camera_main = comp.get_parts_from_camera();
     master_vector_main = comp.get_master_vector();
@@ -802,24 +805,26 @@ int main(int argc, char ** argv) {
                                 std::string location = "shelf5";
                                 gantry.goToPresetLocation(gantry.start_);
                                 ROS_INFO_STREAM("Start location reached");
-                                gantry.goToPresetLocation(gantry.waypoint_1_);
-                                ROS_INFO_STREAM("waypont1 location reached");
-                                gantry.goToPresetLocation(gantry.waypoint_2_);
-                                ROS_INFO_STREAM("waypoint2 location reached");
-                                gantry.goToPresetLocation(gantry.waypoint_3_);
-                                ROS_INFO_STREAM("waypoint3 location reached");
-                                gantry.goToPresetLocation(gantry.waypoint_4_);
-                                ROS_INFO_STREAM("waypoint4 location reached");
+                                gantry.goToPresetLocation(gantry.bin1_);
+                                ROS_INFO_STREAM("bin1 location reached");
+//                                gantry.goToPresetLocation(gantry.waypoint_1_);
+//                                ROS_INFO_STREAM("waypont1 location reached");
+//                                gantry.goToPresetLocation(gantry.waypoint_2_);
+//                                ROS_INFO_STREAM("waypoint2 location reached");
+//                                gantry.goToPresetLocation(gantry.waypoint_3_);
+//                                ROS_INFO_STREAM("waypoint3 location reached");
+//                                gantry.goToPresetLocation(gantry.waypoint_4_);
+//                                ROS_INFO_STREAM("waypoint4 location reached");
                                 gantry.pickPart(parts_from_camera_main[l][m]);
                                 ROS_INFO_STREAM("Part picked");
-                                gantry.goToPresetLocation(gantry.waypoint_4_);
-                                ROS_INFO_STREAM("waypoint4 location reached");
-                                gantry.goToPresetLocation(gantry.waypoint_3_);
-                                ROS_INFO_STREAM("waypoint3 location reached");
-                                gantry.goToPresetLocation(gantry.waypoint_2_);
-                                ROS_INFO_STREAM("waypoint2 location reached");
-                                gantry.goToPresetLocation(gantry.waypoint_1_);
-                                ROS_INFO_STREAM("waypoint1 location reached");
+//                                gantry.goToPresetLocation(gantry.waypoint_4_);
+//                                ROS_INFO_STREAM("waypoint4 location reached");
+//                                gantry.goToPresetLocation(gantry.waypoint_3_);
+//                                ROS_INFO_STREAM("waypoint3 location reached");
+//                                gantry.goToPresetLocation(gantry.waypoint_2_);
+//                                ROS_INFO_STREAM("waypoint2 location reached");
+//                                gantry.goToPresetLocation(gantry.waypoint_1_);
+//                                ROS_INFO_STREAM("waypoint1 location reached");
 
 //                                part part_in_tray;
 //                                part_in_tray.type = master_vector_main[i][j][k].type;
@@ -836,7 +841,7 @@ int main(int argc, char ** argv) {
                                     ros::Duration(2).sleep();
 
                                     ROS_INFO_STREAM("Right Gripper activated");
-                                    ROS_INFO_STREAM("Thirupi Podu Dosaiiiiiii");
+                                    ROS_INFO_STREAM("Flipping Needed");
                                     gantry.goToPresetLocation(gantry.agv2_flip_);
                                     ROS_INFO_STREAM("AGV 2 location reached");
                                     gantry.goToPresetLocation(gantry.pose_change_1);

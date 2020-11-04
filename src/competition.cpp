@@ -296,6 +296,20 @@ void Competition::logical_camera_callback(const nist_gear::LogicalCameraImage::C
 
                 }
             }
+            if (cam_idx == 11){
+                if (!((msg->models[i].type).empty())) {
+                    parts_from_11_camera[i].type = msg->models[i].type;
+                    parts_from_11_camera[i].pose.position.x = tx;
+                    parts_from_11_camera[i].pose.position.y = ty;
+                    parts_from_11_camera[i].pose.position.z = tz;
+                    parts_from_11_camera[i].pose.orientation.x = pose_target.pose.orientation.x;
+                    parts_from_11_camera[i].pose.orientation.y = pose_target.pose.orientation.y;
+                    parts_from_11_camera[i].pose.orientation.z = pose_target.pose.orientation.z;
+                    parts_from_11_camera[i].pose.orientation.w = pose_target.pose.orientation.w;
+                    parts_from_11_camera[i].faulty = false;
+                    parts_from_11_camera[i].picked = false;
+                }
+            }
             if (cam_idx == 16){
                 if (!((msg->models[i].type).empty())) {
                     parts_from_16_camera[i].type = msg->models[i].type;
