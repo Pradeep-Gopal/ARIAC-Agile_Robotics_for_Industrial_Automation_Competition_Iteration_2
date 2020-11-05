@@ -3,7 +3,7 @@
 Picking and delivering parts in an industrial environment with faulty parts
 
 ## Results
-[Scenario 4](https://www.youtube.com/watch?v=Xu1gFQL5WeM&list=PL_HqcgW4roXofxZxdxJUef4rXWphtUOpH&index=1)
+[Scenario 4](https://www.youtube.com/watch?v=gOvaSLe7cJw)
 
 To view previous scenarios and results, please click the link below
 
