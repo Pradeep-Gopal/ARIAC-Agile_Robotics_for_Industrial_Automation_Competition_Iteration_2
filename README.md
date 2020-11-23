@@ -1,6 +1,6 @@
 # ARIAC Competition
 
-Picking and delivering parts in an industrial environment with faulty parts
+Picking and delivering parts in an industrial environment with faulty parts, faulty robotics gripper and priority orders
 
 ## Results
 [Scenario 4](https://www.youtube.com/watch?v=gOvaSLe7cJw)
